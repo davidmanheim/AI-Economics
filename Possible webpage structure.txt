@@ -1,0 +1,50 @@
+Suggested webpage structure
+
+A single-page presentation could be organized as:
+
+Who captures the value of an LLM output?
+How scarce GPUs are allocated
+When one model dominates
+How oligopoly changes prices and rents
+What happens after a new model release
+Three possible technological futures
+Why users may subscribe to several providers
+Explore the full model
+Paper, appendices, and downloadable code
+
+The final “Explore” section could expose all parameters simultaneously for more technical users.
+
+Useful design choices
+
+Use model names such as “Leader,” “Follower A,” and “Follower B,” rather than real companies. Otherwise readers will argue about empirical calibration instead of understanding the mechanism.
+
+Keep monetary values normalized unless you have defensible data. For example:
+
+physical compute cost =1;
+leader productivity =1.4;
+follower productivity =1.1;
+capacity =100.
+
+Readers should be able to switch between normalized values and an explicitly labeled illustrative calibration.
+
+Every output should distinguish:
+
+level of profit from share of total producer surplus;
+nominal price from quality-adjusted price;
+total LLM market from the frontier/high-value segment;
+temporary leadership from durable monopoly.
+
+Those distinctions are easy to lose in a visual presentation.
+
+Best final form
+
+I would make the supplement a hybrid of:
+
+a short visual essay;
+four interactive model modules;
+expandable technical derivations;
+a downloadable simulation notebook.
+
+The web version’s central narrative should be:
+
+New models shift the value of GPU capacity. Scarcity determines how much surplus exists, competition determines who receives it, and technological progress determines whether market leadership is temporary, persistent, or eventually commoditized.

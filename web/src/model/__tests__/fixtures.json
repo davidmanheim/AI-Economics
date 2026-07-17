@@ -1,0 +1,460 @@
+{
+  "meta": {
+    "source": "notebook/llm-econ-model.ipynb (Python/numpy oracle)",
+    "preset": "NORMALIZED",
+    "note": "Independent Python re-implementation of src/model/*.ts; the Vitest oracle (fixtures.test.ts) asserts the TypeScript matches these to 1e-9."
+  },
+  "params": {
+    "c": 1.0,
+    "K": 100.0,
+    "N": 300.0,
+    "thetaMax": 10.0,
+    "firms": [
+      {
+        "name": "Leader",
+        "q": 1.4,
+        "a": 1.0,
+        "b": 0.0
+      },
+      {
+        "name": "Follower A",
+        "q": 1.1,
+        "a": 1.0,
+        "b": 0.0
+      },
+      {
+        "name": "Follower B",
+        "q": 0.9,
+        "a": 1.0,
+        "b": 0.0
+      }
+    ]
+  },
+  "allocation": [
+    {
+      "c": 1.0,
+      "K": 40.0,
+      "N": 300.0,
+      "thetaMax": 10.0,
+      "firms": [
+        {
+          "q": 1.4,
+          "a": 1.0,
+          "b": 0.0
+        },
+        {
+          "q": 1.1,
+          "a": 1.0,
+          "b": 0.0
+        },
+        {
+          "q": 0.9,
+          "a": 1.0,
+          "b": 0.0
+        }
+      ],
+      "lambda": 9.677333333333333,
+      "capacityBinds": true,
+      "allocations": [
+        {
+          "name": "Leader",
+          "x": 35.599999999999994,
+          "y": 35.599999999999994,
+          "v": 10.677333333333333,
+          "active": true
+        },
+        {
+          "name": "Follower A",
+          "x": 4.399999999999999,
+          "y": 4.399999999999999,
+          "v": 10.677333333333333,
+          "active": true
+        },
+        {
+          "name": "Follower B",
+          "x": 0.0,
+          "y": 0.0,
+          "v": 9.0,
+          "active": false
+        }
+      ]
+    },
+    {
+      "c": 1.0,
+      "K": 100.0,
+      "N": 300.0,
+      "thetaMax": 10.0,
+      "firms": [
+        {
+          "q": 1.4,
+          "a": 1.0,
+          "b": 0.0
+        },
+        {
+          "q": 1.1,
+          "a": 1.0,
+          "b": 0.0
+        },
+        {
+          "q": 0.9,
+          "a": 1.0,
+          "b": 0.0
+        }
+      ],
+      "lambda": 7.532981530343006,
+      "capacityBinds": true,
+      "allocations": [
+        {
+          "name": "Leader",
+          "x": 58.57519788918207,
+          "y": 58.57519788918207,
+          "v": 8.532981530343006,
+          "active": true
+        },
+        {
+          "name": "Follower A",
+          "x": 33.6411609498681,
+          "y": 33.6411609498681,
+          "v": 8.532981530343006,
+          "active": true
+        },
+        {
+          "name": "Follower B",
+          "x": 7.7836411609498946,
+          "y": 7.7836411609498946,
+          "v": 8.532981530343006,
+          "active": true
+        }
+      ]
+    },
+    {
+      "c": 1.0,
+      "K": 450.0,
+      "N": 300.0,
+      "thetaMax": 10.0,
+      "firms": [
+        {
+          "q": 1.4,
+          "a": 1.0,
+          "b": 0.0
+        },
+        {
+          "q": 1.1,
+          "a": 1.0,
+          "b": 0.0
+        },
+        {
+          "q": 0.9,
+          "a": 1.0,
+          "b": 0.0
+        }
+      ],
+      "lambda": 0.0,
+      "capacityBinds": false,
+      "allocations": [
+        {
+          "name": "Leader",
+          "x": 139.28571428571428,
+          "y": 139.28571428571428,
+          "v": 1.000000000000001,
+          "active": true
+        },
+        {
+          "name": "Follower A",
+          "x": 136.36363636363635,
+          "y": 136.36363636363635,
+          "v": 1.0000000000000016,
+          "active": true
+        },
+        {
+          "name": "Follower B",
+          "x": 133.33333333333331,
+          "y": 133.33333333333331,
+          "v": 1.0000000000000013,
+          "active": true
+        }
+      ]
+    }
+  ],
+  "wta": [
+    {
+      "K": 30.0,
+      "N": 300.0,
+      "thetaMax": 10.0,
+      "firms": [
+        {
+          "q": 1.4,
+          "a": 1.0,
+          "b": 0.0
+        },
+        {
+          "q": 1.1,
+          "a": 1.0,
+          "b": 0.0
+        },
+        {
+          "q": 0.9,
+          "a": 1.0,
+          "b": 0.0
+        }
+      ],
+      "isWTA": true,
+      "leader": "Leader",
+      "vLeaderAtK": 11.200000000000001,
+      "bestFollowerV0": 11.0
+    },
+    {
+      "K": 100.0,
+      "N": 300.0,
+      "thetaMax": 10.0,
+      "firms": [
+        {
+          "q": 1.4,
+          "a": 1.0,
+          "b": 0.0
+        },
+        {
+          "q": 1.1,
+          "a": 1.0,
+          "b": 0.0
+        },
+        {
+          "q": 0.9,
+          "a": 1.0,
+          "b": 0.0
+        }
+      ],
+      "isWTA": false,
+      "leader": "Leader",
+      "vLeaderAtK": 4.666666666666667,
+      "bestFollowerV0": 11.0
+    }
+  ],
+  "cournot": [
+    {
+      "A": 14.0,
+      "B": 0.04666666666666667,
+      "a": 1.0,
+      "b": 0.0,
+      "c": 1.0,
+      "n": 3,
+      "K": 100.0,
+      "P": 9.333333333333332,
+      "r": 7.777777777777778,
+      "physicalCost": 1.0,
+      "scarcityRent": 6.777777777777778,
+      "markup": 1.5555555555555545,
+      "perFirmMarkup": 1.5555555555555556,
+      "labProfitAggregate": 155.55555555555557,
+      "binding": true
+    },
+    {
+      "A": 14.0,
+      "B": 0.04666666666666667,
+      "a": 1.0,
+      "b": 0.0,
+      "c": 1.0,
+      "n": 6,
+      "K": 100.0,
+      "P": 9.333333333333332,
+      "r": 8.555555555555557,
+      "physicalCost": 1.0,
+      "scarcityRent": 7.555555555555557,
+      "markup": 0.777777777777775,
+      "perFirmMarkup": 0.7777777777777778,
+      "labProfitAggregate": 77.77777777777779,
+      "binding": true
+    },
+    {
+      "A": 14.0,
+      "B": 0.04666666666666667,
+      "a": 1.0,
+      "b": 0.0,
+      "c": 1.0,
+      "n": 3,
+      "K": 260.0,
+      "P": 4.25,
+      "r": 1.0,
+      "physicalCost": 1.0,
+      "scarcityRent": 0.0,
+      "markup": 3.25,
+      "perFirmMarkup": 3.25,
+      "labProfitAggregate": 679.0178571428571,
+      "binding": false
+    },
+    {
+      "A": 14.0,
+      "B": 0.04666666666666667,
+      "a": 1.0,
+      "b": 0.0,
+      "c": 1.0,
+      "n": 1,
+      "K": 100.0,
+      "P": 9.333333333333332,
+      "r": 4.666666666666666,
+      "physicalCost": 1.0,
+      "scarcityRent": 3.666666666666666,
+      "markup": 4.666666666666666,
+      "perFirmMarkup": 4.666666666666667,
+      "labProfitAggregate": 466.6666666666667,
+      "binding": true
+    }
+  ],
+  "bargaining": [
+    {
+      "vHat": 8.533,
+      "vHatF": 3.0,
+      "c": 1.0,
+      "zeta": 0.5,
+      "negotiatedPrice": 5.7665,
+      "matchSurplus": 5.5329999999999995,
+      "barVH": 3.0,
+      "labRent": 2.7664999999999997,
+      "hyperscalerIncremental": 2.7664999999999997,
+      "hyperscalerMargin": 4.7665
+    },
+    {
+      "vHat": 8.533,
+      "vHatF": 0.5,
+      "c": 1.0,
+      "zeta": 0.3,
+      "negotiatedPrice": 6.2730999999999995,
+      "matchSurplus": 7.5329999999999995,
+      "barVH": 1.0,
+      "labRent": 2.2598999999999996,
+      "hyperscalerIncremental": 5.2730999999999995,
+      "hyperscalerMargin": 5.2730999999999995
+    },
+    {
+      "vHat": 6.0,
+      "vHatF": 4.0,
+      "c": 1.0,
+      "zeta": 1.0,
+      "negotiatedPrice": 4.0,
+      "matchSurplus": 2.0,
+      "barVH": 4.0,
+      "labRent": 2.0,
+      "hyperscalerIncremental": 0.0,
+      "hyperscalerMargin": 3.0
+    }
+  ],
+  "vLead": [
+    {
+      "deltaPi": 3.0,
+      "r": 0.05,
+      "Lambda": 0.5,
+      "V": 5.454545454545454
+    },
+    {
+      "deltaPi": 10.0,
+      "r": 0.08,
+      "Lambda": 0.4,
+      "V": 20.833333333333332
+    },
+    {
+      "deltaPi": 0.0,
+      "r": 0.05,
+      "Lambda": 0.5,
+      "V": 0.0
+    }
+  ],
+  "regimes": [
+    {
+      "regime": "common",
+      "G": 10.0,
+      "qBar": 1.6,
+      "d": 0.55,
+      "psi": 1.8,
+      "beta": 0.4,
+      "q": 1.4269172895959348
+    },
+    {
+      "regime": "firm-specific",
+      "G": 10.0,
+      "qBar": 1.6,
+      "d": 0.55,
+      "eta": 1.27,
+      "beta": 0.4,
+      "q": 1.8130410561955765
+    },
+    {
+      "regime": "continuing",
+      "G": 10.0,
+      "eta": 1.4,
+      "beta": 0.4,
+      "q": 3.5166410041134117
+    }
+  ],
+  "bertrand": [
+    {
+      "QL": 1.4,
+      "QF": 1.1,
+      "kappaL": 1.0,
+      "kappaF": 1.0,
+      "thetaMax": 10.0,
+      "PL": 2.799999999999758,
+      "PF": 1.599999999999905,
+      "muL": 1.7999999999997578
+    }
+  ],
+  "subscriptions": {
+    "theta": 6.0,
+    "tasks": [
+      {
+        "name": "Writing",
+        "count": 8
+      },
+      {
+        "name": "Coding",
+        "count": 6
+      },
+      {
+        "name": "Analysis",
+        "count": 4
+      }
+    ],
+    "providers": [
+      {
+        "name": "Leader",
+        "phi": 20.0,
+        "rho": 1.0,
+        "a": 1.5,
+        "quality": [
+          1.4,
+          1.3,
+          1.5
+        ]
+      },
+      {
+        "name": "Follower A",
+        "phi": 8.0,
+        "rho": 0.6,
+        "a": 1.0,
+        "quality": [
+          1.1,
+          1.45,
+          1.2
+        ]
+      },
+      {
+        "name": "Follower B",
+        "phi": 5.0,
+        "rho": 0.4,
+        "a": 0.6,
+        "quality": [
+          0.9,
+          0.9,
+          0.95
+        ]
+      }
+    ],
+    "netValue_p0_t0": 7.399999999999999,
+    "incrementalValue_p1_empty": 123.0,
+    "incrementalValue_p1_given0": 7.799999999999994,
+    "portfolioUtility_all": 106.79999999999998,
+    "greedyPortfolio": [
+      1
+    ],
+    "singleProviderSubscribes": true
+  }
+}

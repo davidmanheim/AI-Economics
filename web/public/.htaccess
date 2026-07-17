@@ -1,0 +1,25 @@
+# Serve index.html at the site root.
+DirectoryIndex index.html
+
+# Explicitly allow access — a 403 right after upload is very often caused by
+# an inherited "deny all" from a parent .htaccess, or by Apache 2.4's default
+# posture with no explicit grant. This forces access open for this directory.
+<IfModule mod_authz_core.c>
+  # Apache 2.4+
+  Require all granted
+</IfModule>
+<IfModule !mod_authz_core.c>
+  # Apache 2.2 and older
+  Order allow,deny
+  Allow from all
+</IfModule>
+
+# Don't auto-generate directory listings (harmless either way since every
+# directory here has an index file or is only linked to directly).
+Options -Indexes
+
+# Make sure the notebook downloads with a sane type instead of whatever the
+# server's default fallback is.
+<IfModule mod_mime.c>
+  AddType application/octet-stream .ipynb
+</IfModule>

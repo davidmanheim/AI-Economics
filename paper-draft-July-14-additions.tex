@@ -1,0 +1,1179 @@
+\documentclass[11pt]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{amsthm}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proposition}{Proposition}
+\usepackage{geometry}
+\usepackage{enumitem}
+\usepackage[expansion=false]{microtype}
+\usepackage{natbib}
+\usepackage[hidelinks]{hyperref}
+\usepackage{draftwatermark}
+\SetWatermarkText{In-Progress Draft}
+\SetWatermarkScale{0.8}
+\SetWatermarkColor[gray]{0.85}
+\SetWatermarkAngle{53}
+
+\geometry{margin=1in}
+\setlist{nosep}
+
+\title{The Future Economics of LLMs: From Hyperscaler GPUs to Consumer Usage}
+\author{David Manheim}
+\date{July 2026}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+The model presented in this paper is straightforward, and novel only inasmuch as it applies standard market dynamics to the LLM market, and combines several parts of the market dynamics picture. Purchasers differ in how much they value model capability; models differ in economically relevant quality per unit of inference compute; hyperscalers have fixed short-run capacity; and model laboratories contract with those hardware owners for access to that capacity. We study the near-term dynamics of supply and demand which occur once purchasers want to buy more LLM usage than is available at the cost of production, so that prices can rise to reflect demand.
+
+The central assumption is that LLM providers will increase prices to allow them to match demand, and thus scarce compute flows toward uses with the highest willingness to pay, which will effectively mean most LLM usage is for applications with the highest benefit to users per constrained FLOP. A laboratory's capability advantage matters only insofar as it raises this marginal net revenue.
+
+There is also heterogeneity between lab capabilities; the persistent laboratory advantage is represented as a multiplicative productivity advantage rather than a fixed additive increment, which would vanish relative to an exponentially advancing frontier, and we account for heterogeneity across laboratory capabilities. The model shows that winner-take-all requires a demanding condition, which is that the leader's worst funded use of compute must be more valuable than every follower's best use. The paper then identifies several mechanisms that cause this condition to fail, producing coexistence instead. We distinguish the integrated-industry allocation benchmark from a plausible oligopolistic downstream market in which purchaser-facing prices contain three components: physical production cost, hyperscaler scarcity rent, and a model-provider markup. Finally, we extend the model to lumpy model development, temporary leadership, endogenous GPU investment, and alternative long-run technological regimes. Under a common asymptote, model-specific rents tend to disappear, though oligopoly markups need not; firm-specific asymptotes preserve durable differentiation; and continuing improvement produces repeated episodes of temporary leadership in which laboratory rents rise after breakthroughs and hyperscaler bargaining power rises as competitors catch up.
+\end{abstract}
+
+\section{Introduction}
+\label{sec:introduction}
+
+Much discussion of AI market dynamics has simplified into pure competition by model providers, ignoring the fact that market for large-language-model inference has two economically distinct layers. Model laboratories own or control systems that differ in capability, efficiency, and commercial attractiveness. Hyperscalers own much of the hardware needed to operate those systems at scale. In the short run of multiple years, the stock of suitable inference hardware is fixed, while demand for valuable model outputs seems poised to become much larger than the amount that can be supplied at prices near physical production cost.
+
+This setting raises four related questions. First, how is scarce inference compute allocated among models that differ in capability and cost? Second, how are the resulting rents divided between model laboratories and hardware owners? Third, does a persistent model advantage imply that one laboratory serves the entire market, or can trailing laboratories remain viable? Fourth, how do model development, GPU investment, and temporary frontier leadership change the static allocation over time?
+
+The model below gives the obvious microeconomic answer, which serves as a baseline; compute is allocated according to marginal net benefit and willingness to pay\footnote{This does not require the usual assumption that compute flows only to the applications with the highest marginal revenue: some valuable consumer uses are still served, but the allocation implies that many consumer applications will be filled by relatively cheap models. We use marginal net revenue as a stand-in for marginal net benefit throughout.} per constrained FLOP\footnote{We do not explore labor market dynamics, but will note that as prices rise, companies will need to make much more conscious decisions about their LLM usage and spending; in some cases it's plausible that human programmers will temporarily remain cheaper than LLMs due to prices. This depends heavily on our later discussion about the future trajectory of model capabilities, but again, will not be explored in detail.}. A laboratory's capability advantage matters only insofar as it shifts this marginal-value schedule upward. Fixed hyperscaler capacity generates scarcity rents, but the leader need not receive all capacity because marginal demand slopes downward and competing models may generate greater value per FLOP for some tasks or purchaser segments.
+
+The integrated-industry benchmark is useful but incomplete. When laboratories have downstream market power, purchaser-facing prices include a model-provider markup in addition to physical cost and the price of compute. Oligopoly can therefore leave consumer prices high even when GPU capacity is no longer scarce. Conversely, when capacity is tightly binding, oligopoly may change the division of rents between laboratories and hyperscalers more than it changes total output.
+
+The dynamic extension treats training investment as competing with current inference for compute, makes model releases lumpy, and allows hyperscalers to expand future capacity through capital expenditure. A successful model release shifts a laboratory's marginal-value schedule upward and can generate temporary winner-take-most outcomes until a competitor releases a substitute. The duration and value of leadership depend on the rate of frontier progress, the persistence of firm-specific productivity differences, and the strategic behavior of oligopolistic model providers.
+
+Throughout, we treat model laboratories and hyperscalers as distinct firms that transact at a price for compute. This is a simplification, and arguably the model's largest departure from the current industry: several of the largest hyperscalers own or hold major stakes in frontier laboratories, and leading laboratories increasingly build or contract for dedicated data-center capacity of their own. We keep the two layers separate because doing so makes the division of rents between them explicit. Most of the allocation results are, in any case, unchanged by integration: an integrated firm still faces the internal opportunity cost of a FLOP, so the allocation rule and the shadow price of capacity survive, and it is mainly the way the resulting rents are booked between the two layers that changes. Section~\ref{sec:vertical-integration} makes this precise.
+
+\section{Literature Review}
+\label{sec:literature-review}
+
+The model is novel, if at all, in combining several standard mechanisms in the context of the LLM inference market. Its treatment of heterogeneous purchasers and differences in model quality follows the literature on vertical product differentiation.
+
+\citet{mussaRosen1978} study a monopolist offering products of different qualities to consumers who differ in their willingness to pay for quality. \citet{shakedSutton1982} extend this logic to oligopolistic competition and show how vertical differentiation can soften price competition. The utility specification used here, in which purchaser $i$ values an output of quality $Q_m$ at $\theta_i \cdot Q_m$, is a reduced-form version of this standard approach. \citet{sutton1991} adds the entry margin: when the sunk cost of entry is endogenous, because firms can escalate quality investment, growing markets need not fragment and concentration stays bounded below. Section~\ref{sec:natural-oligopoly} applies this free-entry logic with training compute as the sunk cost.
+
+The distinction between the integrated-industry benchmark and downstream oligopoly follows the broader literature on differentiated-product competition. \citet{dixit1979quality} analyzes quality and quantity choices under oligopoly, while \citet{singhVives1984} compare price and quantity competition in a differentiated duopoly. This literature motivates treating model-provider markups as distinct from physical production costs and upstream compute rents. It also shows why convergence in technical quality does not by itself imply marginal-cost pricing when a finite number of differentiated firms continue to compete strategically.
+
+A second literature studies competition under capacity constraints. \citet{krepsScheinkman1983} show that capacity precommitment followed by price competition can yield the outcome of a Cournot quantity game. More directly related to the present model, \citet{boccardWauthy2010} combine vertical differentiation with capacity precommitment and analyze how product quality and limited capacity jointly affect price competition. These models establish that fixed capacity can sustain prices above marginal production cost and affect the allocation of demand across differentiated suppliers. The present model adapts this logic to a setting in which the constrained input is inference compute and models differ in the economic value they generate per FLOP.
+
+The division of rents between laboratories and hyperscalers is related to the literature on vertical markets and bilateral bargaining. \citet{hornWolinsky1988} combine bargaining over input prices with downstream duopoly and show that the division of surplus depends on upstream and downstream market structure, product substitutability, and the parties' outside options. This provides a standard basis for separating the wholesale price of compute from the downstream model-provider markup, and for allowing both oligopoly among laboratories and market power among hyperscalers.
+
+The dynamic behavior of trailing laboratories is related to models of learning-by-doing and dynamic pricing. \citet{cabralRiordan1994} show that current production and pricing can affect future competitive advantage through a learning curve. A firm may therefore price aggressively in the present because greater current output improves its future costs or market position. The analogous mechanism here is that serving inference demand may preserve customer relationships, generate deployment knowledge or data, and increase a laboratory's probability of producing a competitive future model. The strength of this mechanism depends on whether inference deployment actually contributes to future model capability.
+
+The model-development race is also related to quality-ladder and creative-destruction models. \citet{grossmanHelpman1991} model repeated stochastic improvements that move products up a quality ladder, while \citet{aghionHowitt1992} study innovation driven by the temporary rents created when a new technology displaces an incumbent technology. These mechanisms correspond closely to the temporary leadership considered here: a successful model release raises a laboratory's productivity and market share until a competitor releases a sufficiently strong substitute. More directly, the investment-hazard structure used in Section~\ref{sec:model-race}, in which research spending raises the probability of a discrete release, follows the patent-race literature of \citet{loury1979}, \citet{leeWilde1980}, and \citet{reinganum1983}, while the leader's incentive to invest partly in order to deter followers is the preemption motive of \citet{gilbertNewbery1982}, and the observation that a follower gains more from a given release than the leader does is the replacement effect of \citet{arrow1962}. \citet{besankoDoraszelski2004} provide a complementary dynamic model of capacity accumulation in which lumpy investment, depreciation, and the mode of product-market competition can generate persistent asymmetries in firm size. Their analysis motivates the treatment of hyperscaler capacity as a slowly adjusting state variable rather than an instantaneously supplied input.
+
+The subscription extension follows the literature on two-part tariffs. \citet{oi1971} considers a fixed access fee combined with a marginal usage charge, and \citet{schmalensee1981} analyzes how consumer heterogeneity affects optimal two-part pricing. The same structure applies when a user pays a subscription fee for the option to purchase future model outputs at a discounted marginal price. The extension does not require uncertainty: task-specific differences in model value can make several subscriptions worthwhile under complete information. When quality is costly to determine before use, the extension also relates to \citet{nelson1970}, who distinguishes goods whose relevant quality is learned through search or experience.
+
+The comparison among technological regimes is related both to the economics of research productivity and to empirical neural scaling laws. \citet{kaplanEtAl2020} document power-law relationships between language-model loss and model size, data, and training compute. \citet{hoffmannEtAl2022} refine the compute-allocation problem by jointly scaling model size and training data. These results support modeling frontier progress as a systematic function of effective training compute over the observed range, but do not determine whether the relationship continues indefinitely or approaches a binding economic or technical asymptote. \citet{bloomEtAl2020} document declining research productivity in several sectors despite rising research effort, motivating the comparison between continuing improvement and cases in which additional performance gains require rapidly increasing investment.
+
+A recent\footnote{or at least, recent as the term is used in economics; the AI literature moves much more quickly.} AI-specific literature studies model pricing, product design, and market structure. \citet{mahmood2024} analyzes pricing competition between generative-AI providers whose models differ in their cost-effectiveness across tasks. Users choose between models based on both price and the number of interactions required to obtain a satisfactory output. This directly addresses competition among differently performing models, but does not impose a common fixed supply of upstream inference compute.
+
+\citet{bergemannBonattiSmolin2026} study optimal pricing and product design for LLM services when users differ in their valuations across tasks. Their framework models token-processing costs, heterogeneous users, and the allocation of inference resources, but focuses on product design by a single provider rather than competition among laboratories for a fixed stock of hyperscaler capacity.
+
+At the industry level, \citet{korinekVipra2025} analyze how scaling, high fixed costs, access to compute and other scarce inputs, vertical integration, and feedback effects may produce concentration in the market for foundation models. They emphasize possible tipping near the technological frontier while allowing stronger competition among models behind it. \citet{demirerEtAl2025} provide complementary empirical evidence on model supply, prices, performance, demand, and differentiation. \citet{fradkin2025demand} documents rapid adoption following model releases, variation in whether new models substitute for existing demand or expand the market, and substantial multi-homing among applications. Together, these papers motivate treating model releases as discrete shocks to market shares while allowing several models to retain demand at the same time.
+
+The present model combines heterogeneous willingness to pay for model quality, differences in quality-adjusted output per FLOP, fixed aggregate hyperscaler capacity, allocation according to marginal net revenue per FLOP, persistent laboratory-specific productivity differences, rent division between laboratories and hardware owners, and the possibility that trailing laboratories operate at a current loss to preserve future option value. The extensions add oligopolistic downstream pricing, two-part subscription contracts, lumpy quality-ladder innovation, endogenous hyperscaler capacity investment, and alternative long-run productivity regimes.
+
+\section{Purchasers, Models, and Compute Requirements}
+\label{sec:basic-setup}
+
+There is a continuum of purchasers indexed by $i$, with total mass $N$. Purchaser $i$ has willingness-to-pay parameter $\theta_i>0$, drawn from a distribution $F$.
+
+There are $M$ models. Model $m$ produces one standardized output of economically relevant quality $Q_m>0$ using an expected $a_m>0$ FLOPs under a specified workload and inference policy. An output may be interpreted as a fixed number of generated tokens, a completed query, or another standardized inference service.
+
+Define quality-adjusted productivity per FLOP as
+
+\begin{equation}q_m\equiv\frac{Q_m}{a_m}.\end{equation}
+
+The choice of standardized output unit is a normalization: Appendix~\ref{app:extensions} shows that the resulting allocation is invariant to the choice of output unit, so nothing below depends on how a standardized output is defined.
+
+Let $P_m$ denote the purchaser-facing price of one standardized output, and define the corresponding price per FLOP as
+
+\begin{equation}p_m\equiv\frac{P_m}{a_m}.\end{equation}
+
+Purchaser utility is determined by total output quality and total output price:
+
+\begin{equation}u_{im}=\theta_i\cdot Q_m-P_m=a_m\cdot\left(\theta_i\cdot q_m-p_m\right).\end{equation}
+
+Each purchaser chooses the model providing the highest non-negative utility:
+
+\begin{equation}m_i^*=\arg\max_{m\in\{1,\ldots,M\}}\left\{0,\theta_i\cdot Q_m-P_m\right\}.\end{equation}
+
+The normalized quantities $q_m$ and $p_m$ are useful for studying the allocation of compute, but purchasers compare total service bundles. In particular, when $a_m$ differs across models, maximizing $a_m\cdot(\theta_i\cdot q_m-p_m)$ is not equivalent to maximizing $\theta_i\cdot q_m-p_m$.
+
+Let $\mathbf y=(y_1,\ldots,y_M)$ denote quantities of model outputs and let $\mathbf Q=(Q_1,\ldots,Q_M)$ denote their qualities. Define $R(\mathbf y;\mathbf Q)$ as the maximum total downstream revenue obtainable from selling output vector $\mathbf y$. We assume that $R$ is differentiable, increasing, and concave over the relevant capacity-constrained region. Concavity reflects the need to serve progressively lower-value purchasers as output expands.
+
+The revenue function is an integrated-industry object: it represents coordinated downstream pricing or an equivalent implementation through contracts. A decentralized equilibrium among competing laboratories need not maximize $R$. The benchmark remains useful because it identifies the joint-profit-maximizing allocation of a scarce input independently of how the resulting rents are divided. This is a joint-profit benchmark rather than a welfare benchmark: because it equalizes marginal net revenue rather than marginal social value per FLOP, it coincides with the welfare-maximizing (efficient) allocation only under perfect price discrimination or price-taking behavior.
+
+\begin{table}[htbp]
+\centering
+\caption{Main recurring symbols.}
+\label{tab:notation}
+\begin{tabular}{ll}
+\hline
+Symbol & Meaning \\
+\hline
+$\theta_i$ & Purchaser $i$'s willingness-to-pay parameter for quality \\
+$Q_m$ & Economically relevant quality of one standardized output of model $m$ \\
+$a_m$ & FLOPs required per standardized output of model $m$ \\
+$q_m\equiv Q_m/a_m$ & Quality-adjusted productivity per FLOP \\
+$P_m$ & Purchaser-facing price of one standardized output \\
+$p_m\equiv P_m/a_m$ & Purchaser-facing price per FLOP \\
+$K$ & Aggregate short-run inference capacity (FLOPs per period) \\
+$x_m$ & Compute (FLOPs) allocated to model $m$ \\
+$y_m\equiv x_m/a_m$ & Output quantity of model $m$ \\
+$c$ & Physical operating cost per FLOP \\
+$b_m$ & Other variable cost per standardized output of model $m$ \\
+$\lambda$ & Shadow price of the capacity constraint \\
+$v_m$ & Marginal net revenue per FLOP for model $m$ (competitive benchmark) \\
+$\eta_\ell$ & Persistent laboratory-specific productivity-level multiplier \\
+$r^*$ & Market-clearing wholesale value of a FLOP \\
+$\mu_\ell$ & Downstream oligopoly markup of laboratory $\ell$ \\
+$\widehat v_\ell$ & Laboratory $\ell$'s private marginal value per FLOP under oligopoly \\
+$\zeta$ & Laboratory Nash bargaining weight (Appendix~\ref{app:bargaining}) \\
+$\sigma$ & Compute-share adjustment speed after a release (Sec.~\ref{sec:model-race}) \\
+$T_{\mathrm{build}}$ & Construction lag for new hyperscaler capacity \\
+$\psi_\ell$ & Laboratory research-efficiency (rate-of-approach) parameter (Sec.~\ref{sec:technology-regimes}) \\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Fixed Inference Capacity}
+\label{sec:fixed-capacity}
+
+Inference hardware is owned by hyperscalers indexed by $h$. Hyperscaler $h$ has fixed short-run capacity $K_h$, measured in FLOPs per period. Aggregate capacity is
+
+\begin{equation}K=\sum_h K_h.\end{equation}
+
+Let $x_{hm}$ denote the FLOPs supplied by hyperscaler $h$ to model $m$. Each hyperscaler faces
+
+\begin{equation}\sum_{m=1}^{M}x_{hm}\leq K_h.\end{equation}
+
+Total compute allocated to model $m$ is
+
+\begin{equation}x_m=\sum_h x_{hm},\end{equation}
+
+and model output is
+
+\begin{equation}y_m=\frac{x_m}{a_m}.\end{equation}
+
+The aggregate capacity constraint is therefore
+
+\begin{equation}\sum_{m=1}^{M}a_m\cdot y_m\leq K.\end{equation}
+
+Let $c$ denote the physical operating cost per FLOP, and let $b_m$ denote other variable costs per standardized output from model $m$.
+
+The maintained scarcity assumption is not that demand exceeds capacity at every possible price. At sufficiently high prices, demand falls. Instead, we study the parameter region in which demand for the relevant class of inference services exceeds available capacity at prices close to physical production cost.
+
+Define the near-cost price per output as
+
+\begin{equation}P_m^0=b_m+a_m\cdot c,\end{equation}
+
+and let $D_m(\mathbf P,\mathbf Q)$ denote demand for model $m$. The scarcity assumption is
+
+\begin{equation}\sum_{m=1}^{M}a_m\cdot D_m(\mathbf P^0,\mathbf Q)>K.\end{equation}
+
+Under this assumption, the market cannot serve all demand at prices close to marginal physical cost. Capacity binds in the relevant benchmark allocation, and equilibrium prices may contain a scarcity rent.
+
+\subsection{Demand and revenue from purchaser heterogeneity}
+\label{subsec:two-model-demand}
+
+So far $R(\mathbf y;\mathbf Q)$ and $D_m(\mathbf P,\mathbf Q)$ have been treated as abstract primitives. They can instead be derived directly from the purchaser utility $\theta_i\cdot Q_m-P_m$. The standard case is two vertically differentiated models and uniformly distributed willingness to pay, which we work out here because it grounds two objects used later: the concavity of $R$ imposed in Section~\ref{sec:basic-setup}, and the assumption $\partial v_m/\partial q_m>0$ introduced in Section~\ref{sec:persistent-advantage}. A notational note before proceeding: the uniform specification below is the case $F=U[0,\bar\theta]$ of the willingness-to-pay distribution $F$ introduced in Section~\ref{sec:basic-setup}, while the subscript $F$ used throughout this subsection and Appendix~\ref{app:two-model} (as in $D_F$, $Q_F$, $\widehat v_F$) denotes the follower model; the two uses of $F$ are unrelated, and context disambiguates them.
+
+Let there be two models, a leader $L$ and a follower $F$, with $Q_L>Q_F>0$, and let $\theta_i\sim U[0,\bar\theta]$ over a purchaser mass $N$. Each purchaser buys the model giving the highest non-negative utility. Comparing $L$ with $F$ gives an upper indifference cutoff, and comparing $F$ with buying nothing gives a lower cutoff:
+
+\begin{equation}\theta^{*}=\frac{P_L-P_F}{Q_L-Q_F},\qquad \theta^{0}=\frac{P_F}{Q_F}.\end{equation}
+
+When $\theta^{0}<\theta^{*}<\bar\theta$, the $\theta$ line segments into three quality tiers: purchasers with $\theta_i\geq\theta^{*}$ buy $L$, those with $\theta_i\in[\theta^{0},\theta^{*})$ buy $F$, and those with $\theta_i<\theta^{0}$ buy nothing. Integrating the uniform density over each tier gives the demand system
+
+\begin{equation}D_L(\mathbf P;\mathbf Q)=N\left[1-\frac{P_L-P_F}{(Q_L-Q_F)\,\bar\theta}\right],\qquad D_F(\mathbf P;\mathbf Q)=N\left[\frac{P_L-P_F}{(Q_L-Q_F)\,\bar\theta}-\frac{P_F}{Q_F\,\bar\theta}\right].\end{equation}
+
+Because each purchaser buys one output, $y_m=D_m$; inverting the system gives the inverse demands
+
+\begin{equation}P_L=\bar\theta\left[Q_L-\frac{Q_L\,y_L+Q_F\,y_F}{N}\right],\qquad P_F=\bar\theta\,Q_F\left[1-\frac{y_L+y_F}{N}\right],\end{equation}
+
+and downstream revenue $R(\mathbf y;\mathbf Q)=P_L\,y_L+P_F\,y_F$ is the quadratic form
+
+\begin{equation}R(\mathbf y;\mathbf Q)=\bar\theta\left(Q_L\,y_L+Q_F\,y_F\right)-\frac{\bar\theta}{N}\left(Q_L\,y_L^{2}+2Q_F\,y_L\,y_F+Q_F\,y_F^{2}\right).\end{equation}
+
+\begin{lemma}\label{lem:two-model}
+For the two-model system above with $Q_L>Q_F>0$ and $\theta_i\sim U[0,\bar\theta]$:
+\begin{enumerate}
+\item $R(\mathbf y;\mathbf Q)$ is strictly concave in $\mathbf y$ over the region in which all three tiers are non-empty; and
+\item writing $Q_m=a_m\,q_m$ and holding output quantities fixed, marginal net revenue per FLOP satisfies $\partial v_m/\partial q_m>0$ whenever the served mass $y_L+y_F$ is below $N/2$, i.e., whenever capacity is scarce enough that only the higher-$\theta$ portion of purchasers is served.
+\end{enumerate}
+\end{lemma}
+
+Part~(1) is the microfoundation for the concavity assumption on $R$: the Hessian of $R$ is $-2(\bar\theta/N)\left[\begin{smallmatrix}Q_L&Q_F\\ Q_F&Q_F\end{smallmatrix}\right]$, which is negative definite precisely because $Q_L>Q_F$. Part~(2) grounds the productivity assumption of Section~\ref{sec:persistent-advantage}: a more productive model delivers higher economically relevant quality per FLOP, which raises its marginal revenue as long as it is not already forced down into the low-value part of the market. Appendix~\ref{app:two-model} gives the calculations, and shows that the same demand system delivers the comparative statics used in Section~\ref{sec:technology-regimes}.
+
+\section{Integrated-Industry Allocation Benchmark}
+\label{sec:allocation}
+
+Suppose downstream quantities and prices can be coordinated, or equivalently that contracts among model providers and hyperscalers implement the allocation that maximizes aggregate operating profit. Transfers between model providers and hyperscalers do not affect this joint-profit objective.
+
+Aggregate operating profit is
+
+\begin{equation}W(\mathbf y)=R(\mathbf y;\mathbf Q)-\sum_{m=1}^{M}b_m\cdot y_m-c\cdot\sum_{m=1}^{M}a_m\cdot y_m.\end{equation}
+
+The benchmark allocation solves
+
+\begin{equation}\max_{\mathbf y\geq0}\;R(\mathbf y;\mathbf Q)-\sum_{m=1}^{M}b_m\cdot y_m-c\cdot\sum_{m=1}^{M}a_m\cdot y_m\quad\text{subject to}\quad\sum_{m=1}^{M}a_m\cdot y_m\leq K.\end{equation}
+
+Let $\lambda\geq0$ be the multiplier on the capacity constraint. For every model receiving a positive allocation, the first-order condition is
+
+\begin{equation}\frac{\frac{\partial R}{\partial y_m}-b_m}{a_m}=c+\lambda.\end{equation}
+
+Define marginal revenue and marginal net revenue per FLOP as
+
+\begin{equation}MR_m\equiv\frac{\partial R}{\partial y_m},\qquad v_m\equiv\frac{MR_m-b_m}{a_m}.\end{equation}
+
+The allocation condition becomes
+
+\begin{equation}\boxed{v_m=c+\lambda}\end{equation}
+
+for every active model, while inactive models satisfy
+
+\begin{equation}v_m\leq c+\lambda.\end{equation}
+
+Thus scarce compute is allocated according to marginal net revenue per FLOP.
+
+When the total output price can be treated as locally fixed because an additional output can be sold without materially changing price,
+
+\begin{equation}MR_m\simeq P_m=a_m\cdot p_m.\end{equation}
+
+Hence
+
+\begin{equation}v_m\simeq\frac{P_m-b_m}{a_m}=p_m-\frac{b_m}{a_m}.\end{equation}
+
+This is the sense in which laboratories and hyperscalers maximize dollars per FLOP. Strictly speaking, the relevant object is marginal net revenue per constrained FLOP, not average revenue per FLOP.
+
+A more capable model does not necessarily receive compute before a weaker model. It does so only when its additional purchaser value is large enough, relative to its inference and non-compute costs, to generate greater marginal net revenue per FLOP. A lower-compute model has no independent advantage merely because its standardized output unit is smaller. It has an economic advantage when it preserves more than a proportional share of purchaser value or otherwise raises value net of cost per constrained resource.
+
+\section{Persistent Laboratory Productivity}
+\label{sec:persistent-advantage}
+
+Each model is owned by a laboratory $\ell(m)$. Because economically relevant model productivity may improve by orders of magnitude, we model common technological progress and persistent laboratory advantage multiplicatively.
+
+Let productivity per FLOP evolve according to
+
+\begin{equation}\log q_{mt}=A_t+\alpha_{\ell(m)}+\varepsilon_{mt},\end{equation}
+
+or equivalently,
+
+\begin{equation}q_{mt}=\bar q_t\cdot\eta_{\ell(m)}\cdot\xi_{mt},\qquad \bar q_t\equiv e^{A_t},\qquad \eta_\ell\equiv e^{\alpha_\ell},\qquad \xi_{mt}\equiv e^{\varepsilon_{mt}}.\end{equation}
+
+Here, $\bar q_t$ is the common technological frontier in economically relevant quality per FLOP, $\eta_\ell>0$ is a persistent laboratory-specific productivity multiplier, and $\xi_{mt}>0$ is a temporary model-specific shock. Total quality remains
+
+\begin{equation}Q_{mt}=a_{mt}\cdot q_{mt}.\end{equation}
+
+Laboratory $L$ has a persistent productivity lead over laboratory $j$ when $\eta_L>\eta_j$, or equivalently $\alpha_L>\alpha_j$. In the absence of temporary shocks,
+
+\begin{equation}\frac{q_{Lt}}{q_{jt}}=\frac{\eta_L}{\eta_j}=e^{\alpha_L-\alpha_j}.\end{equation}
+
+The proportional advantage is therefore independent of the level of the common frontier.
+
+This differs importantly from an additive level specification,
+
+\begin{equation}q_{mt}=A_t+\alpha_{\ell(m)}+\varepsilon_{mt}.\end{equation}
+
+Under the additive specification,
+
+\begin{equation}\lim_{A_t\rightarrow\infty}\frac{A_t+\alpha_L}{A_t+\alpha_j}=1.\end{equation}
+
+A fixed laboratory increment becomes asymptotically negligible relative to the common frontier. The multiplicative specification instead represents a persistent structural efficiency advantage in algorithms, training, post-training, data, research organization, or the ability to produce economically relevant performance with fewer inference resources.
+
+Higher productivity per FLOP generally shifts the model's marginal-value schedule upward. We assume
+
+\begin{equation}\frac{\partial v_m}{\partial q_m}>0.\end{equation}
+
+Lemma~\ref{lem:two-model}(2) derives this inequality for the two-model demand system, under the scarcity condition that only the higher-$\theta$ portion of purchasers is served; we take it as a maintained assumption more generally. It follows that
+
+\begin{equation}\eta_L\uparrow\;\Longrightarrow\;q_L\uparrow\;\Longrightarrow\;v_L\uparrow.\end{equation}
+
+A persistent proportional productivity advantage therefore creates a persistent advantage in the market for scarce compute. Whether it produces a growing absolute rent also depends on downstream demand, capacity growth, and the elasticity of marginal revenue with respect to productivity.
+
+A useful alternative interpretation is a persistent lead in frontier time. If $\bar q_t=\bar q_0\cdot e^{g\cdot t}$ and laboratory $\ell$ is effectively $\tau_\ell$ periods ahead, then
+
+\begin{equation}q_{\ell t}=\bar q_{t+\tau_\ell}=\bar q_t\cdot e^{g\cdot\tau_\ell}.\end{equation}
+
+Thus a fixed time lead corresponds to a productivity multiplier $\eta_\ell=e^{g\cdot\tau_\ell}$.
+
+The decomposition above compresses a laboratory's productivity into the single multiplier $\eta_\ell$, which implicitly treats relative performance as uniform across tasks. That is a simplifying assumption, not a restriction of the underlying mechanism: the same multiplicative structure extends directly to task-indexed productivity. Let $k$ index tasks or purchaser segments and write
+
+\begin{equation}\log q_{m,k,t}=A_t+\alpha_{\ell(m)}+\beta_{\ell(m),k}+\varepsilon_{m,k,t},\end{equation}
+
+where $\beta_{\ell,k}$ is a laboratory- and task-specific comparative-advantage term, normalized so that $\sum_k w_k\,\beta_{\ell,k}=0$ under task weights $w_k$, leaving $\alpha_\ell$ as laboratory $\ell$'s average productivity across its task mix. A laboratory with $\alpha_L>\alpha_j$ on average can still trail on individual tasks where $\beta_{L,k}<\beta_{j,k}$ outweighs the average gap, which is exactly the source of the coexistence mechanisms taken up in Section~\ref{subsec:task-segmentation} and the task-specific productivity of Appendix~\ref{app:extensions}. We work with the scalar $\eta_\ell$ through Section~\ref{sec:concentration} because the aggregate winner-take-all condition depends only on the task-weighted average; task-level detail becomes necessary once coexistence, rather than the identity of the aggregate leader, is the object of interest.
+
+\section{Concentration and Coexistence}
+\label{sec:concentration}
+
+To state the concentration result transparently, impose a reduced-form separability assumption at the laboratory level. Let $G_\ell(x_\ell)$ be the gross operating value generated by laboratory $\ell$ after it optimally allocates $x_\ell$ FLOPs among its own models. Assume
+
+\begin{equation}G_\ell'(x_\ell)>0,\qquad G_\ell''(x_\ell)<0.\end{equation}
+
+Define the laboratory's marginal net revenue per FLOP as
+
+\begin{equation}v_\ell(x_\ell)\equiv G_\ell'(x_\ell).\end{equation}
+
+The reduced form abstracts from strategic cross-effects in downstream pricing. Appendix~\ref{app:extensions} states the corresponding condition when laboratories' marginal values depend directly on rivals' allocations.
+
+Let $r^*$ be the market-clearing wholesale value of a FLOP in the competitive-allocation benchmark. Every active laboratory satisfies
+
+\begin{equation}v_\ell(x_\ell)=r^*,\end{equation}
+
+while inactive laboratories satisfy
+
+\begin{equation}v_\ell(0)\leq r^*.\end{equation}
+
+Capacity clears:
+
+\begin{equation}\sum_\ell x_\ell=K.\end{equation}
+
+Let $L$ denote the laboratory with the highest initial marginal value per FLOP. It receives all available compute if and only if
+
+\begin{equation}\boxed{v_L(K)\geq\max_{\ell\neq L}v_\ell(0).}\end{equation}
+
+This condition says that even the leader's least valuable use of the final available FLOP is more valuable than every follower's best initial use.
+
+If the condition fails, multiple laboratories receive compute. The model does not itself predict which outcome occurs: winner-take-all requires the demanding condition above---the leader's worst funded use of the final available FLOP must be more valuable than every follower's best initial use---and the mechanisms listed below cause that condition to fail, producing coexistence instead. Whether the condition holds is an empirical question about the curvature of laboratories' value schedules that the model does not restrict. Coexistence requires different marginal-value-per-FLOP schedules, which may arise because:
+
+\begin{enumerate}
+\item laboratories differ in quality-adjusted productivity per FLOP;
+\item relative performance differs across tasks or purchaser segments (Section~\ref{subsec:task-segmentation} formalizes this mechanism, together with the frictions of the next);
+\item models are horizontally differentiated by language, latency, privacy, specialization, reliability, integration, or contractual guarantees;
+\item laboratories face different normalized non-compute costs or compute-contract terms; or
+\item a laboratory offers several model tiers that serve different portions of demand.
+\end{enumerate}
+
+The final mechanism implies that concentration at the laboratory level may exceed concentration at the model level. A single laboratory may operate frontier, mid-tier, and lower-priced models. A smaller model contributes to the laboratory's compute demand only if it raises marginal net revenue per constrained FLOP for some portion of demand, not merely because one standardized output uses fewer FLOPs. All of this takes the set of laboratories as given: it asks how laboratories that already hold frontier models divide scarce compute. Section~\ref{sec:natural-oligopoly} treats the prior question of how many laboratories can recover the fixed cost of fielding such a model at all.
+
+\subsection{Task-Indexed Quality and Segment-Level Dominance}
+\label{subsec:task-segmentation}
+
+The second and third mechanisms deserve more than a bullet, because the compression of commercially relevant performance into the scalar $Q_m$ (or $q_m$) is doing real work in the winner-take-all condition above. Index use cases or purchaser segments by $k$: coding, enterprise agents, low-latency consumer queries, a particular language. Let $Q_{mk}$ denote model $m$'s economically relevant quality on use case $k$, with $a_{mk}$ FLOPs per standardized output and $q_{mk}\equiv Q_{mk}/a_{mk}$, as in the task-specific productivity of Appendix~\ref{app:extensions}. Purchaser utility becomes
+
+\begin{equation}u_{imk}=\theta_{ik}\cdot Q_{mk}-P_{mk}-s_{imk},\end{equation}
+
+where $\theta_{ik}$ allows a purchaser's valuation of quality to differ across use cases and $s_{imk}\geq0$ is a purchaser- and provider-specific friction: an integration cost, latency, a privacy cost, a switching cost, or a contractual requirement. Setting a single use case and $s_{imk}=0$ recovers the baseline. The friction term is what absorbs the third mechanism: two models with identical $Q_{mk}$ can face different effective demand because purchasers bear different frictions in reaching them. The setup is close in spirit to \citet{mahmood2024}, where models differ in cost-effectiveness across tasks, and to \citet{bergemannBonattiSmolin2026}, where users differ in valuations across tasks.
+
+To carry this section's machinery over, we need the analogue of its reduced-form separability assumption, now at the laboratory--segment level. Assume laboratory $\ell$ generates gross operating value $\sum_k G_{\ell k}(x_{\ell k})$ from devoting $x_{\ell k}$ FLOPs to segment $k$, with $G_{\ell k}'>0$ and $G_{\ell k}''<0$ for each pair, and that compute is fungible across segments, so the aggregate constraint is $\sum_\ell\sum_k x_{\ell k}\leq K$. Write $v_{\ell k}(x)\equiv G_{\ell k}'(x)$. Separability across segments is a real restriction, parallel to the one already imposed at the laboratory level: it abstracts from cross-segment demand linkages such as shared subscriptions, bundled enterprise contracts, or reputational spillovers from a strong position in one segment onto demand in another.
+
+\begin{proposition}[Segment-level winner-take-all]
+\label{prop:segment-wta}
+Under the separability assumption above, let $r^*$ be the wholesale value of a FLOP that clears the capacity market, $\sum_\ell\sum_k x_{\ell k}=K$. Then:
+\begin{enumerate}
+\item every active laboratory--segment pair satisfies $v_{\ell k}(x_{\ell k})=r^*$, and every inactive pair satisfies $v_{\ell k}(0)\leq r^*$;
+\item segment $k$ is served by laboratory $L_k$ alone if and only if $\max_{\ell\neq L_k}v_{\ell k}(0)\leq r^*$: the winner-take-all condition of this section applies segment by segment, with the market-wide clearing value $r^*$ in the role of the leader's marginal value of the final FLOP; and
+\item the identity of $L_k$ may differ across $k$, and one laboratory absorbs all of $K$ if and only if the condition in part~(2) holds for that same laboratory in every served segment simultaneously.
+\end{enumerate}
+\end{proposition}
+
+The proof is the first-order condition of Section~\ref{sec:allocation} applied to the doubly indexed choice variables $x_{\ell k}$, with strict concavity of each $G_{\ell k}$ delivering uniqueness; parts~(2) and~(3) simply read off which pairs clear the participation threshold $r^*$. Part~(2) is the boxed condition of this section restated within a segment: the segment leader's least valuable funded FLOP in segment $k$ earns exactly $r^*$, so sole service of the segment requires that every rival's best use \emph{in that segment} be worth no more than that.
+
+The qualitative headline is part~(3): nothing forces $L_k$ to be constant across $k$. Laboratory $L$ may lead on coding and enterprise agents while laboratory $j$ leads on low-latency consumer queries or on a particular language, and both positions are consistent with the same clearing value $r^*$. Global winner-take-all now requires the demanding condition of this section to hold for the same laboratory in every segment at once, and it fails whenever any rival holds a protected niche---a segment where task-specific quality or rivals' frictions give it $v_{\ell k}(0)>r^*$. Four implications follow, of which the first two are direct consequences of Proposition~\ref{prop:segment-wta} and the last two are plausible readings of it rather than results.
+
+\paragraph{Aggregate versus within-segment concentration.} Because global dominance requires one laboratory to win every segment while segment-level dominance requires winning only one, aggregate concentration is weakly lower than a one-quality model calibrated to the same aggregate value schedules would predict, while concentration \emph{within} an individual use case can simultaneously be extreme. Measured market structure therefore depends on the unit of observation: an aggregate concentration index can look moderate while nearly every individual use case is served by one or two providers. The testable form is that concentration measured within a use case should exceed concentration measured across the market as a whole.
+
+\paragraph{Persistent multi-homing.} A purchaser whose task mix spans segments led by different laboratories rationally pays for access to more than one provider. This is exactly the mechanism formalized in Appendix~\ref{app:subscriptions}, whose incremental-value condition requires only that a provider be sufficiently better or cheaper on \emph{some} tasks; task-indexed quality supplies the reason it is better, and the frictions $s_{imk}$ supply the reason routing does not instantly consolidate. The multi-homing that \citet{fradkin2025demand} documents is, on this reading, an equilibrium feature of segmented leadership rather than a transitional artifact of immature tooling.
+
+\paragraph{Less abrupt displacement.} In the one-quality model a strong release moves a single boxed condition, so market shares can jump discretely (Section~\ref{sec:model-race}). Here a release improves a laboratory's position segment by segment, and displacement occurs only in the segments where the per-segment threshold is crossed, so aggregate share should move in smaller steps. We flag this as plausible rather than proven: it depends on releases improving quality non-uniformly across segments, which is realistic but not something the model restricts, and a release that dominates uniformly still displaces everywhere at once. The mechanism is complementary to, and observationally hard to separate from, the switching-and-integration friction $\sigma$ of Section~\ref{sec:model-race}.
+
+\paragraph{A portfolio interpretation of laboratory advantage.} A laboratory's competitive position is then the profile of its segment-level positions rather than the scalar $\eta_\ell$ of Section~\ref{sec:persistent-advantage}, its flow rents sum across segments, and the temporary-leadership value of Section~\ref{sec:model-race} becomes a sum of segment-level terms, each with its own displacement hazard. This is an interpretation of the model rather than a theorem, but it matters for reading the dynamics: a laboratory can lose the frontier in one segment while its aggregate position barely moves.
+
+Differentiation of this kind also has a pricing consequence, which anticipates Section~\ref{sec:oligopoly}. Under downstream oligopoly the Lerner condition there applies segment by segment: with segment-level demand and own-price elasticity $\epsilon_{\ell\ell,k}$, the markup $\mu_{\ell k}$ is segment-specific, and it is largest in the segments where the laboratory's quality lead or its rivals' friction disadvantage is largest, because that is where competing models are the poorest substitutes and $\epsilon_{\ell\ell,k}$ is lowest. Applied within a single segment, the two-model demand system of Lemma~\ref{lem:two-model} delivers this exactly---Proposition~\ref{prop:breakthrough}'s markup comparative static in the quality gap---while in a general demand system the claim is directional rather than guaranteed, for the reasons discussed before Proposition~\ref{prop:breakthrough}. The price decomposition of Section~\ref{sec:oligopoly} then holds segment by segment: the scarcity rent component reflects the common clearing value of fungible compute, while the markup component varies across use cases, so a single provider's price relative to quality should be highest precisely where its lead is largest.
+
+Finally, this demand-side force and the supply side push in opposite directions: task-indexed demand supports more viable frontier providers, while vertical integration and dependence on particular clouds or accelerator families can reduce the number of laboratories able to field frontier capacity at all; see Section~\ref{sec:vertical-integration} for that upstream side. Segmentation also matters upstream of the rent division studied here: Section~\ref{subsec:segmented-entry} shows that defensible segments change not just how rents divide among existing laboratories but how many laboratories can recover the fixed cost of training in the first place.
+
+\section{Oligopolistic Model Provision}
+\label{sec:oligopoly}
+
+The preceding allocation benchmark suppresses downstream market power. In an oligopoly, each laboratory chooses its own output or price while taking rivals' decisions as given. This introduces a model-provider markup in addition to physical production cost and the hyperscaler's compute charge.
+
+Let laboratory $\ell$ face residual inverse demand
+
+\begin{equation}P_\ell=P_\ell(y_\ell,\mathbf y_{-\ell};\mathbf q).\end{equation}
+
+If laboratory $\ell$ pays wholesale compute price $r_\ell$ per FLOP, its marginal cost per standardized output is
+
+\begin{equation}\kappa_\ell=b_\ell+a_\ell\cdot r_\ell.\end{equation}
+
+Under Cournot quantity competition, operating profit is
+
+\begin{equation}\pi_\ell=\left[P_\ell(y_\ell,\mathbf y_{-\ell};\mathbf q)-b_\ell-a_\ell\cdot r_\ell\right]\cdot y_\ell.\end{equation}
+
+The interior first-order condition is
+
+\begin{equation}P_\ell+y_\ell\cdot\frac{\partial P_\ell}{\partial y_\ell}=b_\ell+a_\ell\cdot r_\ell.\end{equation}
+
+Define the laboratory's downstream oligopoly markup as
+
+\begin{equation}\mu_\ell\equiv-y_\ell\cdot\frac{\partial P_\ell}{\partial y_\ell}>0.\end{equation}
+
+The purchaser-facing price decomposes as
+
+\begin{equation}\boxed{P_\ell=\underbrace{b_\ell+a_\ell\cdot c}_{\text{physical production cost}}+\underbrace{a_\ell\cdot(r_\ell-c)}_{\text{hyperscaler scarcity rent}}+\underbrace{\mu_\ell}_{\text{model-provider markup}}.}\end{equation}
+
+This decomposition separates the two layers of market power. The hyperscaler earns a margin when compute is scarce or when hardware supply is concentrated. This margin is a peak-load scarcity rent of the kind first analyzed for capacity-constrained utilities by \citet{boiteux1960} and studied in the modern literature on scarcity pricing of fixed capacity \citep{crewKleindorfer1976}: with short-run capacity fixed and demand pressing against it, price rises above physical operating cost, and the resulting rent is the market's signal for capacity investment. The laboratory earns a downstream markup when its model faces a downward-sloping residual demand curve.
+
+The laboratory's willingness to pay for an additional FLOP is no longer the average purchaser-facing margin per FLOP. It is the increase in equilibrium profit generated by additional compute:
+
+\begin{equation}\widehat v_\ell(x_\ell,\mathbf x_{-\ell})\equiv\frac{\partial\pi_\ell^*}{\partial x_\ell}.\end{equation}
+
+Two value concepts are used from here on. Plain $v$ (with subscript $m$ or $\ell$) denotes the integrated-benchmark, competitive marginal net value per FLOP of Sections~\ref{sec:allocation}--\ref{sec:concentration}, while the hatted $\widehat v_\ell$ denotes a laboratory's private marginal value per FLOP under oligopoly, used in this section and afterward. Because additional oligopoly output reduces the price earned on the laboratory's inframarginal units, $\widehat v_\ell\leq v_\ell$ in general.
+
+Because additional output may reduce the price earned on the laboratory's existing output, generally
+
+\begin{equation}\widehat v_\ell<\frac{P_\ell-b_\ell}{a_\ell}.\end{equation}
+
+Under a competitive upstream auction for fixed capacity, the wholesale compute price $r^*$\footnote{This is the same symbol $r^*$ introduced in Section~\ref{sec:concentration} for the competitive-benchmark clearing price. Here it denotes the analogous market-clearing compute price under the oligopoly/auction setting; the two are distinct equilibrium objects that share one symbol.} is approximately determined by the best losing laboratory's private marginal value:
+
+\begin{equation}r^*\simeq\max\{c,\widehat v_F\}.\end{equation}
+
+The marginal surplus then decomposes as
+
+\begin{equation}\widehat v_L-c=\left(\widehat v_L-\widehat v_F\right)+\left(\widehat v_F-c\right).\end{equation}
+
+The first term is differential rent retained by the leading laboratory; the second is the hyperscaler's scarcity rent under the competitive upstream benchmark. Appendix~\ref{app:bargaining} relaxes this division by allowing bilateral bargaining and oligopsony. There, with a laboratory Nash bargaining weight $\zeta\in[0,1]$, the negotiated wholesale price splits the match-specific surplus $\widehat v_\ell-\bar v_h$ so that the laboratory retains a share $\zeta$ and the hyperscaler the remaining $1-\zeta$; the competitive-auction benchmark above is the special case in which the hyperscaler's outside option approaches the best losing bidder's value. That appendix bargains over a single marginal block in isolation, following \citet{hornWolinsky1988} for motivation; when several laboratory--hyperscaler pairs bargain simultaneously, the appropriate solution concept is Nash-in-Nash, in which each pair's price is the Nash bargain taken as given the agreements reached by every other pair \citep{collardWexlerEtAl2019}.
+
+\subsection{Binding and slack capacity}
+
+Oligopoly has different effects depending on whether aggregate compute remains scarce after laboratories restrict output. Let $y_\ell^{\mathrm{olig}}(c)$ denote laboratory $\ell$'s oligopoly output when compute is available at physical cost. Capacity remains binding if
+
+\begin{equation}\sum_\ell a_\ell\cdot y_\ell^{\mathrm{olig}}(c)>K.\end{equation}
+
+When this condition holds, all capacity is used. Downstream oligopoly may have a limited effect on total output because total quantity is physically constrained, but it changes the division of rents: laboratories bid less aggressively for marginal compute than competitive output providers would and retain larger downstream markups.
+
+Capacity is slack if
+
+\begin{equation}\sum_\ell a_\ell\cdot y_\ell^{\mathrm{olig}}(c)\leq K.\end{equation}
+
+Then the wholesale compute price falls to physical cost, $r^*=c$, and hyperscaler scarcity rents disappear. Consumer prices may nevertheless remain above marginal cost because $\mu_\ell>0$. Additional GPU construction then has little direct effect on purchaser-facing prices unless it changes downstream entry, quality, or strategic conduct.
+
+The binding case has a sharper implication, which the symmetric Cournot example of Appendix~\ref{app:cournot} makes exact.
+
+\begin{proposition}[Capacity-binding neutrality of the number of laboratories]
+\label{prop:capacity-neutrality}
+Consider $n$ symmetric laboratories selling a homogeneous inference service under Cournot competition with linear inverse demand $P(Y)=A-B\cdot Y$, where each standardized output requires $a$ FLOPs. If aggregate capacity binds, so that $a\cdot Y=K$, the purchaser-facing price is
+\begin{equation}P^*=A-\frac{B\cdot K}{a},\end{equation}
+which depends on aggregate capacity $K$ but not on the number of laboratories $n$. Raising $n$ leaves total output and the consumer price unchanged and instead reallocates rent: each laboratory's markup $B\cdot K/(a\cdot n)$ falls, while the wholesale compute price $r^*$ rises, transferring fixed-capacity rent from laboratories to hyperscalers. See Appendix~\ref{app:cournot} for the derivation.
+\end{proposition}
+
+The economic content is a clean separation of two policy levers. As long as capacity binds, building GPUs lowers purchaser prices, because added capacity relaxes the constraint that pins down output; adding laboratories does not, because total output is fixed by capacity and further competition only redistributes the resulting rent. Additional laboratories move the consumer price only once entry pushes total desired output below capacity, at which point capacity becomes slack, $r^*=c$, and the ordinary Cournot dependence on the number of firms reappears. The proposition is deliberately stated for the symmetric, homogeneous-good, linear-demand case: it isolates the mechanism rather than claiming that real laboratories are identical, and heterogeneity or differentiation reintroduces a role for the composition of providers even under binding capacity.
+
+\subsection{Differentiated-price competition}
+
+If laboratories choose prices rather than quantities, let demand for laboratory $\ell$ be $D_\ell(\mathbf P;\mathbf q)$. Its operating profit is
+
+\begin{equation}\pi_\ell=\left(P_\ell-\kappa_\ell\right)\cdot D_\ell(\mathbf P;\mathbf q).\end{equation}
+
+The interior price-setting condition is
+
+\begin{equation}D_\ell+\left(P_\ell-\kappa_\ell\right)\cdot\frac{\partial D_\ell}{\partial P_\ell}=0.\end{equation}
+
+If $\epsilon_{\ell\ell}$ is the absolute own-price elasticity, the Lerner condition is
+
+\begin{equation}\frac{P_\ell-\kappa_\ell}{P_\ell}=\frac{1}{\epsilon_{\ell\ell}}.\end{equation}
+
+A frontier leader can charge a large markup when competing models are poor substitutes and its own-price elasticity is low. A strong competitor release increases substitution, raises the leader's elasticity, compresses its markup, and simultaneously improves the hyperscaler's outside option in the upstream compute market.
+
+\section{Prices and the Division of Rents}
+\label{sec:prices-rents}
+
+The competitive-allocation benchmark remains useful for separating general scarcity rent from differential laboratory productivity, but the oligopoly section adds a third component: downstream markup. At the purchaser-facing level,
+
+\begin{equation}P_\ell-\left(b_\ell+a_\ell\cdot c\right)=a_\ell\cdot(r_\ell-c)+\mu_\ell.\end{equation}
+
+At the margin, under a competitive upstream auction,
+
+\begin{equation}\widehat v_L-c=\underbrace{\widehat v_L-\widehat v_F}_{\text{laboratory differential rent}}+\underbrace{\widehat v_F-c}_{\text{hyperscaler scarcity rent}}.\end{equation}
+
+A leading laboratory can therefore earn both a differential return in the compute market and a downstream markup over the resulting compute-inclusive marginal cost. The precise division depends on downstream substitution, the number of laboratories, the concentration of hyperscaler capacity, and the bargaining or auction mechanism used to allocate GPUs.
+
+\subsection{Purchaser-facing price under complete dominance}
+
+For a simple special case, suppose one laboratory serves the market through a single leading model $L$ and receives all available capacity. Its output is
+
+\begin{equation}y_L=\frac{K}{a_L}.\end{equation}
+
+Let its inverse demand curve be
+
+\begin{equation}P_L=\mathcal P_L(y_L;Q_L).\end{equation}
+
+Assume that available capacity is below $y_L^{\mathrm{mon}}$, the laboratory's unconstrained monopoly-optimal output (the output it would choose absent the capacity constraint):
+
+\begin{equation}\frac{K}{a_L}<y_L^{\mathrm{mon}}.\end{equation}
+
+Under this assumption, the capacity constraint binds, and the purchaser-facing price is
+
+\begin{equation}P_L^*=\mathcal P_L\left(\frac{K}{a_L};Q_L\right).\end{equation}
+
+In the simple purchaser model, demand for a single active model is
+
+\begin{equation}D_L(P_L)=N\cdot\left[1-F\left(\frac{P_L}{Q_L}\right)\right].\end{equation}
+
+Equating demand to available output gives
+
+\begin{equation}P_L^*=Q_L\cdot F^{-1}\left(1-\frac{K}{a_L\cdot N}\right).\end{equation}
+
+Equivalently, the normalized purchaser-facing price per FLOP is
+
+\begin{equation}p_L^*=q_L\cdot F^{-1}\left(1-\frac{K}{a_L\cdot N}\right).\end{equation}
+
+The price is determined by the willingness to pay of the marginal purchaser who can be served with available capacity. It may therefore be far above physical inference cost. The dominant laboratory serves the highest-value portion of demand permitted by the capacity constraint, not all potential demand.
+
+\subsection{Welfare: transfers, deadweight loss, and cross-laboratory misallocation}
+\label{sec:welfare}
+
+The three-component decomposition invites a welfare reading, because the components differ in whether they are transfers or genuine efficiency losses. The physical production cost $b_\ell+a_\ell\cdot c$ is a real resource cost and raises no welfare question. The hyperscaler scarcity rent $a_\ell\cdot(r_\ell-c)$ is, holding installed capacity $K$ fixed, a pure transfer from purchasers to hardware owners: with capacity binding the same quantity of output is produced whatever the level of the rent, so no deadweight loss arises from the rent itself. This transfer is nonetheless not welfare-irrelevant over a longer horizon, because it is precisely the signal that rewards capacity investment; the scarcity rent that looks like a static transfer is the dynamic incentive to build the GPUs that later relax the constraint (Section~\ref{sec:model-race}). The model-provider markup $\mu_\ell$ is the component that causes deadweight loss in the usual sense: when capacity is slack, each laboratory restricts output below the level at which price equals compute-inclusive marginal cost, and the foregone trades are a standard welfare loss.
+
+Under binding capacity the markup's welfare consequence changes form rather than disappearing. Total output is pinned by $K$, so the markup cannot reduce aggregate quantity; what it distorts instead is the allocation of compute across laboratories. Efficient use of scarce compute equalizes marginal social value per FLOP, but oligopolistic laboratories bid for compute according to their private marginal value $\widehat v_\ell$, which nets out the cannibalization of their own inframarginal output. When markups differ across laboratories---because they face different residual elasticities---the wedge between $\widehat v_\ell$ and social marginal value differs across laboratories too, so compute is drawn toward laboratories with smaller markups relative to the surplus-maximizing allocation. The deadweight loss of downstream market power therefore does not vanish when capacity binds; it is converted from an output-reduction loss into a cross-laboratory misallocation loss, in which the wrong models are served rather than too few outputs served in total. This is the allocative counterpart, on the compute-allocation margin, of the neutrality result of Proposition~\ref{prop:capacity-neutrality}: adding laboratories does not change total output, but heterogeneous markups still move compute away from its highest-value uses.
+
+\section{Trailing Laboratories}
+\label{sec:trailing-labs}
+
+Let $r_j$ denote trailing laboratory $j$'s actual contractual payment per FLOP, and let $r^*$ denote the current market value or opportunity cost of a FLOP. These may differ when compute was prepaid, obtained under a long-term contract, or cannot be transferred or resold.
+
+A trailing laboratory makes a positive current operating contribution when
+
+\begin{equation}\frac{MR_j-b_j}{a_j}\geq r_j.\end{equation}
+
+It earns non-negative economic profit relative to the current market value of compute only when
+
+\begin{equation}\frac{MR_j-b_j}{a_j}\geq r^*.\end{equation}
+
+A near-frontier laboratory may satisfy this condition by charging a modest discount, serving a differentiated segment, or operating a model with greater productivity on particular tasks. A far-behind laboratory with
+
+\begin{equation}v_j(0)<r^*\end{equation}
+
+cannot profitably purchase even its first unit of compute at the market price. It must specialize, obtain subsidized or favorably contracted compute, use hardware with a lower opportunity cost, or leave the undifferentiated general-purpose inference market.
+
+Subscription pricing provides an additional mechanism through which trailing laboratories may remain active without displacing the frontier provider. A purchaser may pay fixed fees to several providers in exchange for discounted future usage, and then route each task to the provider offering the greatest net value. A trailing laboratory need not become the purchaser's primary provider; it need only generate sufficient incremental value on some subset of tasks to justify its subscription fee. Appendix~\ref{app:subscriptions} formalizes this multi-homing mechanism, showing that it arises even under complete information and that it separates a provider's subscription share, usage share, and compute share, so that a trailing provider can hold a broad subscriber base while drawing only a small fraction of inference traffic.
+
+Three forms of discounted operation should be distinguished.
+
+\paragraph{Below average total cost.} A laboratory may fail to recover historical training costs and organizational overhead while pricing above current marginal cash cost:
+
+\begin{equation}P_j>b_j+a_j\cdot r_j.\end{equation}
+
+Each sale still contributes toward fixed costs.
+
+\paragraph{Below economic opportunity cost.} A laboratory with sunk or non-transferable compute may satisfy
+
+\begin{equation}r_j+\frac{b_j}{a_j}<p_j<r^*+\frac{b_j}{a_j}.\end{equation}
+
+It then earns positive current cash flow but less than the value of the compute in its best alternative use. This distinction matters only when that alternative value cannot be fully realized.
+
+\paragraph{Below marginal cash cost.} If
+
+\begin{equation}p_j<r_j+\frac{b_j}{a_j},\end{equation}
+
+then each additional output creates a current cash loss. Such loss-leading is rational only when continued operation generates sufficiently valuable future benefits, such as customer retention, deployment knowledge, useful data, reputation, distribution, or an increased probability of returning to the frontier. Appendix~\ref{app:dynamic-loss} formalizes this condition as a dynamic program in which operating at a current cash loss is optimal only if the discounted gain in the laboratory's continuation value exceeds the current loss; that appendix also stresses that these future benefits should not be assumed.
+
+All of the conditions in this section are flow conditions that take the laboratory's existence---and its sunk training investment---as given. Section~\ref{sec:natural-oligopoly} asks the prior stock question: how many laboratories can expect to recover that investment at all.
+
+\section{Dynamic Model Development and Temporary Leadership}
+\label{sec:model-race}
+
+The static model can be nested inside a dynamic race in which laboratories allocate compute and capital to building future models while serving current inference demand. Let $x_{\ell t}$ be inference FLOPs used by laboratory $\ell$ and let $g_{\ell t}$ be training or model-development FLOPs. The current aggregate constraint is
+
+\begin{equation}\label{eq:agg-constraint}\sum_\ell x_{\ell t}+\sum_\ell g_{\ell t}\leq K_t.\end{equation}
+
+Current inference output is
+
+\begin{equation}y_{\ell t}=\frac{x_{\ell t}}{a_{\ell t}}.\end{equation}
+
+Training therefore has an immediate opportunity cost: a FLOP used to build the next model cannot simultaneously serve current demand. The shadow price of current capacity applies to both uses, unless training and inference rely on non-substitutable hardware.
+
+\subsection{Hyperscaler capacity investment}
+
+Let $H_{ht}$ be capital expenditure by hyperscaler $h$. Because data centers and accelerators require construction and deployment time, current expenditure expands usable capacity only after a lag $T_{\mathrm{build}}$:
+
+\begin{equation}K_{h,t+1}=\left(1-\delta_K\right)\cdot K_{ht}+\Phi_h\left(H_{h,t-T_{\mathrm{build}}}\right).\end{equation}
+
+Aggregate capacity is $K_t=\sum_h K_{ht}$. If an additional unit of installed capacity earns future scarcity rent $\lambda_{h,t+s}$, the hyperscaler's investment condition is
+
+\begin{equation}C_h'(H_{ht})=\mathbb E_t\left[\sum_{s=T_{\mathrm{build}}}^{\infty}\beta^s\cdot\lambda_{h,t+s}\cdot\frac{\partial K_{h,t+s}}{\partial H_{ht}}\right].\end{equation}
+
+Expected future model improvements can therefore raise current GPU and infrastructure investment by increasing expected future demand and the shadow value of capacity. Capacity expansion reduces scarcity conditional on demand, but rising model value and training demand can outpace the construction of new capacity.
+
+\subsection{Lumpy model releases}
+
+Let $R_{\ell t}\in\{0,1\}$ indicate whether laboratory $\ell$ completes and releases a new model. The release probability depends on training compute and other research investment $I_{\ell t}$:
+
+\begin{equation}\Pr\left(R_{\ell t}=1\mid g_{\ell t},I_{\ell t}\right)=h_\ell(g_{\ell t},I_{\ell t}),\qquad \frac{\partial h_\ell}{\partial g_{\ell t}}>0,\qquad \frac{\partial h_\ell}{\partial I_{\ell t}}>0.\end{equation}
+
+Conditional on a release, the laboratory draws a candidate productivity level
+
+\begin{equation}\log q_{\ell,t+1}^{\mathrm{new}}=A_{t+1}+\alpha_\ell+\nu_{\ell,t+1}.\end{equation}
+
+The deployed productivity becomes
+
+\begin{equation}q_{\ell,t+1}=\begin{cases}\max\left\{q_{\ell t},q_{\ell,t+1}^{\mathrm{new}}\right\},&R_{\ell t}=1,\\q_{\ell t},&R_{\ell t}=0.\end{cases}\end{equation}
+
+The static market equilibrium at date $t$ maps the deployed productivity vector and available inference capacity into target compute allocations:
+
+\begin{equation}\widehat{\mathbf x}_t=\mathbf x^*(\mathbf q_t,K_t^I),\qquad K_t^I\equiv K_t-\sum_\ell g_{\ell t}.\end{equation}
+
+A successful release shifts the laboratory's private marginal-profit schedule upward and can cause a discrete increase in its target compute and market shares. To represent switching, evaluation, and integration delays, actual compute share may adjust gradually:
+
+\begin{equation}s_{\ell,t+1}=\left(1-\sigma\right)\cdot s_{\ell t}+\sigma\cdot\widehat s_{\ell t},\qquad \widehat s_{\ell t}\equiv\frac{\widehat x_{\ell t}}{K_t^I},\qquad \sigma\in(0,1].\end{equation}
+
+\subsection{Temporary leadership rents}
+
+Let $\pi_L^{\mathrm{lead}}$ be the leader's flow profit and $\pi_L^{\mathrm{follow}}$ its flow profit after losing the lead. Define
+
+\begin{equation}\Delta\pi_L\equiv\pi_L^{\mathrm{lead}}-\pi_L^{\mathrm{follow}}.\end{equation}
+
+Let $\Lambda_L$ be the hazard that a competitor releases a sufficiently strong substitute. With discount rate $r$, the approximate value of temporary leadership is
+
+\begin{equation}\boxed{V_L^{\mathrm{lead}}\simeq\frac{\Delta\pi_L}{r+\Lambda_L}.}\end{equation}
+
+The formula is the standard exponential-hazard perpetuity. Over a short interval $dt$ the leader collects the flow premium $\Delta\pi_L\,dt$ and keeps the lead with probability $1-\Lambda_L\,dt$, so $V_L^{\mathrm{lead}}=\Delta\pi_L\,dt+(1-r\,dt)(1-\Lambda_L\,dt)\,V_L^{\mathrm{lead}}$; discarding the second-order term and letting $dt\to0$ gives the boxed expression. Three assumptions are hidden in it: (i) the flow premium $\Delta\pi_L$ is constant while the lead lasts; (ii) the catch-up hazard $\Lambda_L$ is constant, so displacement is a Poisson event; and (iii) losing the lead is absorbing. The last is the strongest. Strictly, $V_L^{\mathrm{lead}}$ is the difference between the lead-state and follow-state value functions, and the follow state itself carries an option to regain the lead; the formula sets the value of that option to zero and so overstates the cost of being displaced.
+
+The approximation is also partial-equilibrium in $\Lambda_L$. The hazard is written here as an exogenous constant, but the release process above makes hazards endogenous through $h_\ell(g_{\ell t},I_{\ell t})$, and the investment condition below implies that followers invest more when $V_L^{\mathrm{lead}}$ is large. A higher leadership value therefore raises follower investment and hence $\Lambda_L$, which feeds back to lower $V_L^{\mathrm{lead}}$. So $\Lambda_L$ is an equilibrium object rather than a free parameter: the two should not be varied as independent dials, and the formula is best read as a fixed point evaluated at the equilibrium hazard. We do not solve this fixed point here.
+
+A follower invests because a successful release may move it from thin-margin or negligible demand to temporary leadership. Because the follower would replace another laboratory's rents while the leader would largely cannibalize its own, the follower's private gain from a given release exceeds the leader's, which is the replacement effect of \citet{arrow1962}. The leader nonetheless invests both to advance the frontier and to raise the threshold that a follower must cross; this second, defensive motive is the preemption incentive identified by \citet{gilbertNewbery1982}. The investment problem is a race of the kind studied by \citet{loury1979}, \citet{leeWilde1980}, and \citet{reinganum1983}, in which each laboratory spends to raise its own release hazard while facing the hazard generated by rivals.
+
+Two first-order conditions make the cost side explicit, because the release hazard $h_\ell(g_{\ell t},I_{\ell t})$ depends on both training compute $g_{\ell t}$ and other research investment $I_{\ell t}$. For research investment,
+
+\begin{equation}C_\ell'(I_{\ell t})=\frac{\partial h_\ell}{\partial I_{\ell t}}\cdot\mathbb E_t\left[\left(V_{\ell,t+1}^{\mathrm{new}}-V_{\ell,t+1}^{\mathrm{old}}\right)_+\mid R_{\ell t}=1\right].\end{equation}
+
+For training compute the marginal cost is not a direct outlay but the forgone inference margin emphasized at the start of this section: a FLOP allocated to $g_{\ell t}$ cannot serve current demand, so it costs its cash cost $c$ to run plus the shadow rent $\lambda_t$ on the scarce capacity it occupies, where $\lambda_t$ is the multiplier on the aggregate constraint~\eqref{eq:agg-constraint}. The condition on training compute is therefore
+
+\begin{equation}c+\lambda_t=\frac{\partial h_\ell}{\partial g_{\ell t}}\cdot\mathbb E_t\left[\left(V_{\ell,t+1}^{\mathrm{new}}-V_{\ell,t+1}^{\mathrm{old}}\right)_+\mid R_{\ell t}=1\right].\end{equation}
+
+Writing the training-compute condition against the full opportunity cost $c+\lambda_t$, rather than treating $g_{\ell t}$ as free, keeps the race consistent with the section's opening observation that training and inference compete for the same scarce capacity. The same opportunity-cost price per training FLOP is what converts cumulative training compute into a monetary entry cost in Section~\ref{sec:natural-oligopoly}. The private return in both conditions includes both new social value and business stealing from competitors. Model-race investment can therefore be excessive because laboratories duplicate costly training efforts to capture temporary rents, or insufficient because they do not capture all consumer and downstream productivity benefits.
+
+\section{Technological Regimes, Consumer Prices, and Rent Shares}
+\label{sec:technology-regimes}
+
+Let $G_{\ell t}$ denote cumulative effective training investment by laboratory $\ell$, and let productivity per inference FLOP be $q_{\ell t}=f_\ell(G_{\ell t})$. The long-run market dynamics depend on whether productivity converges to a common ceiling, converges to firm-specific ceilings, or continues to improve.
+
+Under oligopoly, the purchaser-facing price is
+
+\begin{equation}P_{\ell t}=b_{\ell t}+a_{\ell t}\cdot r_{\ell t}+\mu_{\ell t}.\end{equation}
+
+The first two terms are compute-inclusive marginal cost; $\mu_{\ell t}$ is the downstream oligopoly markup. When upstream compute is allocated competitively, $r_t$ depends on the best alternative laboratory's private marginal value. When laboratories exercise oligopsony or bargain bilaterally, the division is modified as described in Appendix~\ref{app:bargaining}.
+
+\subsection{A common global asymptote}
+
+Suppose all laboratories approach the same maximum productivity $\bar q$:
+
+\begin{equation}q_\ell(G)=\bar q-d_\ell\cdot(\psi_\ell\cdot G)^{-\beta},\qquad d_\ell>0,\qquad \psi_\ell>0,\qquad \beta>0.\end{equation}
+
+Here $\psi_\ell>0$ is a laboratory-specific research-efficiency (rate-of-approach) parameter, distinct from the productivity-level multiplier $\eta_\ell$ of Section~\ref{sec:persistent-advantage}: it governs how fast laboratory $\ell$ closes the gap to the common ceiling, but has no effect on the limit. The remaining distance to the asymptote is
+
+\begin{equation}\bar q-q_\ell(G)=d_\ell\cdot(\psi_\ell\cdot G)^{-\beta}.\end{equation}
+
+Reducing this gap by a constant proportional factor requires a multiplicative increase in training compute. After $n$ equal proportional reductions, required compute grows exponentially in $n$.
+
+Despite differences in research efficiency, all laboratories converge to the same productivity:
+
+\begin{equation}\lim_{G\rightarrow\infty}q_\ell(G)=\bar q,\qquad \lim_{G\rightarrow\infty}\frac{q_L(G)}{q_F(G)}=1.\end{equation}
+
+If downstream products become close substitutes and laboratories compete in prices, convergence raises own-price elasticities and tends to compress model-provider markups:
+
+\begin{equation}\epsilon_{\ell\ell}\uparrow\;\Longrightarrow\;\mu_\ell\downarrow.\end{equation}
+
+This chain is the quality-convergence direction of Proposition~\ref{prop:breakthrough} (stated below in Section~\ref{subsec:continuing-improvement}): in the two-model demand system it is exactly the statement that a shrinking quality gap raises the leader's own-price elasticity and compresses its markup. However, technological convergence does not by itself imply competitive pricing. With a finite Cournot oligopoly, collusion, switching costs, or ecosystem lock-in \citep{klemperer1995}, positive model-provider markups may persist even when model qualities converge.
+
+Training investment eventually weakens because the marginal productivity return approaches zero. If hyperscaler capacity continues to expand, the wholesale scarcity component $r_t-c_t$ also tends to fall. The strongest commoditization outcome therefore requires both technological convergence and sufficient downstream and upstream competition:
+
+\begin{equation}q_L-q_F\rightarrow0,\qquad \mu_\ell\rightarrow0,\qquad r_t-c_t\rightarrow0.\end{equation}
+
+Under these conditions, quality-adjusted consumer prices approach physical inference cost. If downstream oligopoly persists while compute becomes abundant, hyperscaler rents disappear but laboratories retain markups. If compute remains scarce, hyperscalers may capture a large share of a shrinking model-specific surplus even as absolute scarcity rents remain positive.
+
+\subsection{Firm-specific asymptotes}
+
+Suppose instead that laboratories approach different structural productivity limits:
+
+\begin{equation}q_\ell(G)=\eta_\ell\cdot\bar q-d_\ell\cdot G^{-\beta}.\end{equation}
+
+Then
+
+\begin{equation}\lim_{G\rightarrow\infty}\frac{q_L(G)}{q_F(G)}=\frac{\eta_L}{\eta_F}>1.\end{equation}
+
+Training returns still taper, but product differentiation does not disappear. The leader retains a persistent shift in both its demand and private marginal-profit schedules. Complete dominance is possible if
+
+\begin{equation}\widehat v_L(K;\eta_L\cdot\bar q)\geq\widehat v_F(0;\eta_F\cdot\bar q),\end{equation}
+
+while weaker differences produce a vertically differentiated oligopoly.
+
+Consumer prices retain a durable frontier premium. Even if compute becomes abundant so that $r_t\rightarrow c_t$, the leader may charge a positive quality and market-power markup:
+
+\begin{equation}P_L-\left(b_L+a_L\cdot c\right)=\mu_L>0.\end{equation}
+
+If compute remains scarce, purchaser prices contain both the hyperscaler scarcity component and the downstream model-provider markup. The leading laboratory retains a larger share of producer surplus than under the common-asymptote regime because both differential productivity and downstream differentiation remain positive.
+
+\subsection{Continuing productivity improvement}
+\label{subsec:continuing-improvement}
+
+Suppose there is no nearby global ceiling. A simple specification is
+
+\begin{equation}q_{\ell t}=\eta_\ell\cdot\bar q_t\cdot\xi_{\ell t},\qquad \bar q_{t+1}=\left(1+g_t\right)\cdot\bar q_t,\end{equation}
+
+or, as a function of cumulative effective training compute,
+
+\begin{equation}q_\ell(G)=\eta_\ell\cdot G^\beta.\end{equation}
+
+A major release increases the leader's product quality, reduces substitutability, and shifts its private marginal-profit schedule upward. Immediately after a breakthrough,
+
+\begin{equation}q_L\uparrow\;\Longrightarrow\;\epsilon_{LL}\downarrow\;\Longrightarrow\;\mu_L\uparrow,\qquad \widehat v_L-\widehat v_F\uparrow.\end{equation}
+
+The leader may harvest the breakthrough through higher prices and restricted output, or maintain a lower price to acquire subscribers, integrations, and switching costs before competitors catch up \citep{klemperer1987}. The robust prediction is therefore not that nominal prices always rise, but that the leader's feasible price-quality frontier and potential markup increase.
+
+When a competitor releases a near-frontier model, substitution increases:
+
+\begin{equation}q_F\uparrow\;\Longrightarrow\;\epsilon_{LL}\uparrow\;\Longrightarrow\;\mu_L\downarrow,\qquad \widehat v_F\uparrow.\end{equation}
+
+The leader's downstream markup and differential compute rent compress, while the hyperscaler's outside option improves. These two arrow chains are not free-floating assertions about an unspecified demand system: in a general demand system quality convergence need not raise equilibrium own-price elasticities, since prices adjust as well, and markups depend on curvature rather than elasticity alone. They do hold, however, in the two-model demand system of Lemma~\ref{lem:two-model} and in the linear workhorse it belongs to \citep{singhVives1984}, which lets us state the headline dynamic prediction as a proposition rather than a claim.
+
+\begin{proposition}[Breakthroughs, catch-up, and the division of surplus]\label{prop:breakthrough}
+Consider the two-model demand system of Lemma~\ref{lem:two-model} with Bertrand price competition and constant compute-inclusive marginal costs, in an interior equilibrium in which both models are active. The leader's equilibrium Lerner markup $\mu_L$ and its differential private value of compute $\widehat v_L-\widehat v_F$ are both strictly increasing in the quality gap $Q_L-Q_F$, and $\mu_L\to0$ as $Q_L-Q_F\to0$. Consequently a breakthrough that raises $q_L$ and widens the gap lowers the leader's own-price elasticity $\epsilon_{LL}$ and raises $\mu_L$ and $\widehat v_L-\widehat v_F$; a follower release that raises $q_F$ and narrows the gap raises $\epsilon_{LL}$, lowers $\mu_L$, and improves the hyperscaler's outside option.
+\end{proposition}
+
+Laboratories therefore tend to capture a larger share of producer surplus immediately after breakthroughs, while hyperscalers tend to capture a larger share as competitors catch up. Appendix~\ref{app:two-model} proves the markup and rent comparative statics; the elasticity direction then follows from the Lerner identity $\mu_L/P_L=1/\epsilon_{LL}$. Absolute hyperscaler profits may rise in both phases if model improvements expand demand for inference and training compute. The proposition concerns the division of producer surplus, not necessarily the level of profit.
+
+\subsection{Comparison of the regimes}
+
+The key distinction is not simply whether performance eventually stops improving. It is whether the leader--follower gap and downstream market power disappear.
+
+Under a common asymptote, differential productivity rents vanish, but oligopoly markups can persist if competition remains weak. Hyperscaler rents vanish only if capacity becomes abundant or upstream competition drives the compute price to physical cost.
+
+Under firm-specific asymptotes, the leader retains both a durable productivity advantage and potentially a durable downstream markup. Hyperscalers capture the scarcity value common to viable laboratories, but the leader retains a positive differential rent.
+
+Under continuing improvement, market shares and rent shares fluctuate around model releases. The leader captures a larger portion of surplus after a breakthrough; competitors and hyperscalers gain bargaining power during catch-up. Consumer prices can rise, remain sticky, or fall in nominal terms depending on laboratory strategy, but quality-adjusted prices fall only when productivity and capacity growth outpace demand and oligopoly markups.
+
+\section{Fixed Training Costs and the Number of Laboratories}
+\label{sec:natural-oligopoly}
+
+Everything so far takes the set of laboratories as given and asks how they divide scarce compute, how they price, and how rents split between them and the hyperscalers. This section asks the question upstream of all of that: how many laboratories can exist in the first place? Training a frontier model is a large, sunk, essentially fixed cost, while serving additional inference once the model exists is comparatively cheap at the margin. That combination is the classic setup for a natural monopoly or natural oligopoly: the number of firms is bounded not by who wins the contest over scarce compute, but by how many can expect to recover the fixed cost of showing up equipped to compete. The winner-take-all condition of Section~\ref{sec:concentration}, and its segment-level version in Proposition~\ref{prop:segment-wta}, operate on the demand side among laboratories that already hold frontier models; the free-entry condition developed here determines how many laboratories reach that stage at all.
+
+\subsection{The fixed cost of a frontier model}
+\label{subsec:entry-cost}
+
+The model already contains the two ingredients needed to price entry, so we do not introduce a separate fixed-cost primitive. First, Section~\ref{sec:technology-regimes} relates quality per inference FLOP to cumulative effective training compute through a regime-specific law $q_\ell(G)$. Inverting it gives the training compute required to field a model of quality $q$:
+
+\begin{equation}\Gamma_\ell(q)\equiv q_\ell^{-1}(q).\end{equation}
+
+(We write $\Gamma_\ell$ rather than reusing $G_\ell$, which already denotes gross operating value in Section~\ref{sec:concentration}.) Second, Section~\ref{sec:model-race} establishes the price of a training FLOP: its full opportunity cost $c+\lambda_t$, the cash cost of running it plus the shadow rent on the scarce capacity it occupies. The monetary fixed cost of entering at quality $q$ is therefore
+
+\begin{equation}\label{eq:entry-cost}\mathcal F_\ell(q)=\int_0^{\Gamma_\ell(q)}\left(c_t+\lambda_t\right)dG\;\simeq\;\left(c+\lambda\right)\cdot\Gamma_\ell(q),\end{equation}
+
+where the approximation treats the opportunity cost of compute as roughly constant over the training program.
+
+The three technological regimes of Section~\ref{sec:technology-regimes} give the inverse laws directly, and they say quite different things about entry:
+
+\begin{itemize}
+\item \textbf{Common asymptote.} $q_\ell(G)=\bar q-d_\ell\cdot(\psi_\ell\cdot G)^{-\beta}$ inverts to $\Gamma_\ell(q)=\psi_\ell^{-1}\cdot\left(d_\ell/(\bar q-q)\right)^{1/\beta}$, which diverges as $q\to\bar q$. Entry near the ceiling is arbitrarily expensive, so the entry cost rises fastest exactly where products are converging and markups are compressing: late entrants pay more to obtain less differentiation.
+\item \textbf{Firm-specific asymptotes.} $q_\ell(G)=\eta_\ell\cdot\bar q-d_\ell\cdot G^{-\beta}$ inverts to $\Gamma_\ell(q)=\left(d_\ell/(\eta_\ell\cdot\bar q-q)\right)^{1/\beta}$ for $q<\eta_\ell\cdot\bar q$, and no finite training budget reaches $q\geq\eta_\ell\cdot\bar q$. Which laboratories can enter at a commercially required quality is then determined by ceilings before budgets: a laboratory whose asymptote lies below that quality is excluded at any price.
+\item \textbf{Continuing improvement.} $q_\ell(G)=\eta_\ell\cdot G^{\beta}$ inverts to $\Gamma_\ell(q)=\left(q/\eta_\ell\right)^{1/\beta}$, finite for every target. The persistent multiplier $\eta_\ell$ of Section~\ref{sec:persistent-advantage} now appears as an entry-cost advantage, $\mathcal F_\ell(q)\propto\eta_\ell^{-1/\beta}$, so free entry selects laboratories in descending order of research efficiency; and when $\beta<1$, required compute is convex in target quality, so each further increment to the entry bar costs proportionally more.
+\end{itemize}
+
+One honest caveat before using $\mathcal F_\ell$. Equation~\eqref{eq:entry-cost} prices the compute component of entry, because that is what the model contains. Real fixed costs also include research talent, data acquisition, failed and duplicated training runs, and organizational overhead, none of which the model represents, so $\mathcal F_\ell$ should be read as a lower bound, and the model makes no claim to quantify the true figure. The results below need only that the fixed cost is large, sunk, and paid before any revenue arrives.
+
+\subsection{Free entry and the equilibrium number of laboratories}
+\label{subsec:free-entry}
+
+A laboratory pays $\mathcal F$ only if the present value of the profits it expects afterward covers the outlay. The model already supplies the per-period profit of an active laboratory: in the symmetric binding-capacity benchmark of Proposition~\ref{prop:capacity-neutrality}, each of $n$ laboratories earns markup $B\cdot K/(a\cdot n)$ on output $K/(a\cdot n)$, so flow profit is
+
+\begin{equation}\pi(n)=\frac{B\cdot K^{2}}{a^{2}\cdot n^{2}}\end{equation}
+
+per period (Appendix~\ref{app:cournot}). Two features of this expression drive everything below. It is strictly decreasing in $n$; and it falls like $1/n^{2}$ rather than $1/n$, because each entrant both splits the laboratories' profit pool and shrinks it---the aggregate pool $B\cdot K^{2}/(a^{2}\cdot n)$ itself declines in $n$ as competition transfers fixed-capacity rent upstream to hyperscalers (Proposition~\ref{prop:capacity-neutrality}). Entry into the laboratory layer is therefore doubly deterred while capacity binds.
+
+Discount flow profits at rate $r$; if a laboratory's rents also face a displacement hazard $\Lambda$, discount at the effective rate $r+\Lambda$, by the same hazard-perpetuity logic as the temporary-leadership value of Section~\ref{sec:model-race}. Free entry then pins down the number of laboratories: this is the endogenous-sunk-cost logic of \citet{sutton1991}, applied with training compute as the sunk outlay.
+
+\begin{proposition}[Free entry under binding capacity]\label{prop:free-entry}
+Let entrants at quality parity pay a common fixed cost $\mathcal F>0$ and, once active among $n$ laboratories, earn the flow profit $\pi(n)=B\cdot K^{2}/(a^{2}\cdot n^{2})$ of Appendix~\ref{app:cournot}, discounted at effective rate $r+\Lambda>0$, and suppose capacity binds at the resulting number of entrants (the threshold condition of Appendix~\ref{app:cournot}), except where part~(4) explicitly considers the slack case. Then:
+\begin{enumerate}
+\item there is a unique free-entry number of laboratories---the largest $n$ such that $\pi(n)/(r+\Lambda)\geq\mathcal F$---given by
+\begin{equation}n^{*}=\left\lfloor\frac{K}{a}\cdot\sqrt{\frac{B}{(r+\Lambda)\cdot\mathcal F}}\right\rfloor\end{equation}
+whenever $\pi(1)/(r+\Lambda)\geq\mathcal F$; otherwise no laboratory enters;
+\item the market is a natural monopoly---a single laboratory clears the bar while a second entrant would not---precisely when
+\begin{equation}\frac{B\cdot K^{2}}{4\cdot a^{2}}<(r+\Lambda)\cdot\mathcal F\leq\frac{B\cdot K^{2}}{a^{2}},\end{equation}
+a fourfold window of fixed costs, since $\pi(1)/\pi(2)=4$;
+\item $n^{*}$ is weakly decreasing in $\mathcal F$, $r$, and $\Lambda$, and weakly increasing in $K$ and $B$; and
+\item under the uniform-$\theta$ microfoundation of Section~\ref{subsec:two-model-demand} with a single quality tier, $A=\bar\theta\cdot Q$ and $B=\bar\theta\cdot Q/N$, so
+\begin{equation}n^{*}=\left\lfloor\frac{K}{a}\cdot\sqrt{\frac{\bar\theta\cdot Q}{N\cdot(r+\Lambda)\cdot\mathcal F}}\right\rfloor,\end{equation}
+which falls with the purchaser mass $N$ holding capacity fixed; whereas if capacity is slack, the standard Cournot free-entry count satisfies $n^{*}+1=\left\lfloor(A-b-a\cdot c)/\sqrt{B\cdot(r+\Lambda)\cdot\mathcal F}\right\rfloor$, which rises with $N$, proportionally to $\sqrt N$.
+\end{enumerate}
+\end{proposition}
+
+Parts~(1)--(3) follow from the strict monotonicity of $\pi(n)$: the entry condition $\pi(n)\geq(r+\Lambda)\cdot\mathcal F$ rearranges to $n\leq(K/a)\sqrt{B/((r+\Lambda)\mathcal F)}$, and the largest such integer is the unique fixed point at which every active laboratory covers its entry cost while one more entrant would not. Part~(4) substitutes the microfounded demand parameters into the binding-capacity formula and into the textbook free-entry condition $\pi^{\mathrm{slack}}(n)=(A-b-a\cdot c)^{2}/(B\cdot(n+1)^{2})\geq(r+\Lambda)\cdot\mathcal F$ for the slack case.
+
+Part~(4) deserves emphasis because it inverts a standard intuition. The classic sunk-cost logic says the number of firms grows like the square root of market size over fixed cost, so bigger markets support more entrants. Here that holds only while capacity is slack. While capacity binds, total output is pinned at $K/a$, so a larger purchaser mass raises the price level and the scarcity value of compute---but the scarcity value flows into the wholesale price $r^{*}$ and accrues to hyperscalers, while the laboratories' Cournot markup $B\cdot K/(a\cdot n)$, the piece of the surplus that actually repays training costs, is proportional to the demand slope at the constrained quantity and \emph{shrinks} as the market grows. In short: while GPUs bind, market growth funds hyperscalers, not entry. This is the entry-margin counterpart of Proposition~\ref{prop:capacity-neutrality}: under binding capacity, adding laboratories does not lower consumer prices, and growing the market does not add laboratories.
+
+The comparative statics in parts~(2) and~(3) are the formal version of a familiar industrial comparison. Whether the frontier-model market looks more like commercial aircraft---a worldwide market that supports roughly two full-line manufacturers---or like ordinary software, where fixed costs are trivial next to the addressable profit pool, is in this framing the question of where $(r+\Lambda)\cdot\mathcal F$ sits relative to the pool $B\cdot K^{2}/a^{2}$. Larger training runs, faster displacement hazards, or a smaller addressable profit pool all push toward fewer, larger laboratories.
+
+Two qualifications keep the result honest. First, $\mathcal F$ is sunk at entry, so the free-entry count is an ex ante object: a market can transiently carry more than $n^{*}$ laboratories, because entrants who paid on expectations that did not pan out rationally keep operating as long as the flow conditions of Section~\ref{sec:trailing-labs} hold---the training cost is gone either way. The flow conditions there govern who stays; the stock condition here governs who should arrive. Second, the proposition imposes a common $\mathcal F$ at quality parity, parallel to the deliberate symmetry of Proposition~\ref{prop:capacity-neutrality}. With heterogeneous research efficiency, Section~\ref{subsec:entry-cost} makes the fixed cost laboratory-specific, and free entry admits laboratories in descending order of $\eta_\ell$ until the marginal entrant's value no longer covers its own $\mathcal F_\ell$.
+
+\subsection{Segmentation changes how many laboratories can exist}
+\label{subsec:segmented-entry}
+
+Section~\ref{subsec:task-segmentation} read task segmentation as a demand-side force that redistributes rents and shares among the laboratories that exist. The entry margin makes it do something stronger: it changes how many laboratories can exist, because a laboratory that dominates a defensible segment needs to recover $\mathcal F$ only from that segment's profit pool rather than from a contested share of the whole market's.
+
+\begin{proposition}[Entry under segment-level dominance]\label{prop:segmented-entry}
+Divide the uniform-$\theta$ market of Proposition~\ref{prop:free-entry}(4) into $S$ symmetric segments, each containing purchaser mass $N/S$, so that each segment's inverse demand is $P_k=A-S\cdot B\cdot Y_k$. Let each active laboratory serve one segment as its sole provider (the protected-niche configuration of Proposition~\ref{prop:segment-wta}, with cross-segment substitution absent), let aggregate capacity bind, and let compute clear at a common wholesale price. Then:
+\begin{enumerate}
+\item each laboratory's flow profit is
+\begin{equation}\pi^{\mathrm{seg}}(S)=\frac{B\cdot K^{2}}{a^{2}\cdot S},\end{equation}
+which is $S$ times what each of the same $S$ laboratories would earn competing head-on for the whole market;
+\item the purchaser-facing price is $A-B\cdot K/a$ in both configurations, so the capacity-binding neutrality of Proposition~\ref{prop:capacity-neutrality} extends: segmentation changes only the division of rents, lowering the wholesale compute price and moving fixed-capacity rent from hyperscalers to laboratories; and
+\item free entry supports any $S$ with $\pi^{\mathrm{seg}}(S)/(r+\Lambda)\geq\mathcal F$, i.e., up to
+\begin{equation}\bar S=\left\lfloor\frac{B\cdot K^{2}}{a^{2}\cdot(r+\Lambda)\cdot\mathcal F}\right\rfloor\end{equation}
+laboratories, which is, up to integer parts, the \emph{square} of the head-on count $n^{*}$ of Proposition~\ref{prop:free-entry}.
+\end{enumerate}
+\end{proposition}
+
+The derivation is three lines. A segment monopolist facing marginal cost $b+a\cdot r$ sets $A-2\cdot S\cdot B\cdot y_k=b+a\cdot r$; the common wholesale price adjusts until the symmetric allocations exhaust capacity, $y_k=K/(a\cdot S)$; the markup is then $S\cdot B\cdot y_k=B\cdot K/a$ regardless of $S$, and flow profit is markup times output, giving part~(1). The segment price $A-S\cdot B\cdot K/(a\cdot S)=A-B\cdot K/a$ gives part~(2); the implied wholesale price $r^{*}=(A-b)/a-2\cdot B\cdot K/a^{2}$ is below its head-on counterpart from Appendix~\ref{app:cournot} for any $n\geq2$, which is the rent transfer. Part~(3) substitutes part~(1) into the entry condition and compares with Proposition~\ref{prop:free-entry}(1). The configuration itself presumes each segment leader's niche is protected in the sense of Proposition~\ref{prop:segment-wta}: rivals' task-specific quality or frictions keep their marginal value in that segment below the clearing price of compute.
+
+Two forces explain why the head-on count misses this. Differentiation protects markups: a segment leader prices as a monopolist against its own residual demand rather than as one of $n$ Cournot rivals on common demand, which is the Lerner logic of Section~\ref{sec:oligopoly} operating segment by segment. And differentiation partitions the cost-recovery problem: the fixed cost is compared against a whole segment's pool, not against a $1/n$ share of an eroding aggregate pool. The exact square relationship in part~(3) is special to the symmetric linear case and should not be quoted as more than an illustration, but the direction is general: fragmentation of demand into defensible niches raises the number of laboratories that a given profit pool can carry past the fixed-cost bar. Segment differentiation therefore does not merely redistribute rents among incumbents, as in Section~\ref{subsec:task-segmentation}; it relaxes the natural-oligopoly bound itself.
+
+There is a countervailing force, which we flag as a qualitative implication rather than a result. $\mathcal F$ is paid once per laboratory, and the resulting model serves every segment the laboratory can win (Proposition~\ref{prop:segment-wta}(3)), so an incumbent that has already sunk its training cost can invade an adjacent segment at no incremental training cost. Economies of scope therefore push back toward fewer laboratories, each spanning several segments. Which force dominates depends on how correlated a model's quality is across segments---something the model does not restrict---so the observable prediction is bounded between one lab per segment and one lab for all segments, with the fixed-cost bar of Proposition~\ref{prop:free-entry} binding at the aggregate level in the latter case.
+
+\subsection{What is derived and what is conjectured}
+\label{subsec:entry-honesty}
+
+The free-entry fixed point, the fourfold natural-monopoly window, the binding-versus-slack reversal of the market-size comparative static, and the segmentation result are all derived, and derived from machinery already in the paper: the quality laws of Section~\ref{sec:technology-regimes} supply the compute cost of entry, the training-compute condition of Section~\ref{sec:model-race} prices it, and the Cournot expressions of Appendix~\ref{app:cournot} supply post-entry profits. Two things are deliberately not claimed. First, no numerical prediction of the number of laboratories: equation~\eqref{eq:entry-cost} prices only the compute component of the fixed cost, and the symmetric linear demand system is an illustration, not a calibration. Second, the entry quality $q$ is held fixed above, while in reality it is chosen competitively, and the choice escalates: each entrant's incentive to outspend rivals on training raises the quality bar, and with it $\mathcal F$, in step with the profit pool. This is precisely the mechanism by which \citet{sutton1991} argues that growing markets need not fragment---sunk outlays rise endogenously with market size---and the steep rise of $\Gamma_\ell(q)$ in the entry quality, divergent near the asymptotes and convex for $\beta<1$ under continuing improvement (Section~\ref{subsec:entry-cost}), is exactly the channel through which such escalation would operate here. We do not solve the entry-quality game, so that implication remains qualitative.
+
+\section{Implications for Market Structure}
+\label{sec:implications}
+
+The model predicts a layered and dynamic market structure.
+
+\begin{enumerate}
+\item One laboratory or a small set of frontier laboratories serves the highest-value demand and can bid aggressively for scarce compute.
+\item Near-frontier laboratories remain viable by charging lower prices, achieving greater productivity on some tasks, serving differentiated market segments, or becoming secondary subscription providers.
+\item Far-behind laboratories cannot generally compete for scarce compute in the undifferentiated inference market. They must specialize, rely on subsidized or previously contracted hardware, provide services around commoditized models, or exit frontier-model development.
+\item Hyperscalers earn scarcity rents when capacity is binding, but their share depends on competition among laboratories for compute and on the laboratories' ability to exercise oligopsony.
+\item Oligopolistic laboratories can retain positive downstream markups even when compute capacity is abundant, so greater GPU supply is not sufficient by itself to guarantee low consumer prices.
+\item Continuing frontier progress generates temporary leadership, lumpy market-share shifts, and repeated cycles in which model-provider rents rise after breakthroughs and hyperscaler bargaining power rises during catch-up.
+\end{enumerate}
+
+The model's central relationships are:
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+\item Compute is allocated by marginal private value per constrained FLOP.
+\item Consumer price equals physical cost plus GPU scarcity rent plus model-provider markup.
+\item Laboratory rent depends on differential productivity, downstream market power, and upstream bargaining power.
+\item Hyperscaler rent depends on capacity scarcity and competition among laboratories for compute.
+\end{enumerate}
+
+A persistent productivity leader is likely to receive a persistent share of inference compute. Complete dominance requires more: the leader's marginal use of the final available FLOP must remain more valuable than every follower's best initial use. Under oligopoly, even incomplete dominance can sustain substantial model-provider rents, and convergence in technical performance need not imply convergence to marginal-cost pricing.
+
+\section{Vertical Integration and Heterogeneous Hyperscalers}
+\label{sec:vertical-integration}
+
+The baseline treats laboratories and hyperscalers as separate firms meeting in a market for compute. In practice the two layers are frequently integrated, and this is worth taking seriously because it is the model's largest realism gap. It is, however, less damaging to the results than it first appears, because integration bears very differently on the allocation results than on the division-of-rents results.
+
+The allocation rule and the shadow price survive integration. The condition $v_m=c+\lambda$ and the capacity shadow price $\lambda$ depend only on marginal net revenue per FLOP and the physical constraint, not on whether a market transfer actually changes hands. An integrated firm internalizes the wholesale price $r$ as an internal opportunity cost of compute and allocates its own FLOPs to their highest-value use in exactly the same way; the boxed allocation condition of Section~\ref{sec:allocation} is unchanged. What integration changes is the division of rents. When a laboratory and a hyperscaler are the same firm there is no arms-length price at which one pays the other, so the split between the hyperscaler scarcity component $a_\ell\cdot(r_\ell-c)$ and the laboratory markup $\mu_\ell$ ceases to be a market outcome and becomes an internal accounting choice. The bargaining and auction results of Appendix~\ref{app:bargaining}, which describe how the match-specific surplus $\widehat v_\ell-\bar v_h$ is split, then apply only to pairs that remain at arms length; an integrated pair simply retains the whole surplus. The empirical counterpart is that transfer prices for compute booked inside integrated firms need not reveal the shadow value of capacity, and that measured rent shares across the two layers are partly an artifact of where corporate boundaries happen to fall.
+
+A natural reduced-form extension replaces the representative hyperscaler with heterogeneous suppliers $h$, each characterized by capacity $K_h$, operating cost $c_h$, and an outside- or internal-demand parameter $o_h$. This captures neoclouds, large diversified clouds, captive internal demand, and cost differences across hardware vintages without modeling the semiconductor supply chain: the single clearing price $r^*$ is then replaced by a supply schedule traced out by the ordered marginal costs and outside options of the individual suppliers, and vertical integration appears as a supplier whose $o_h$ reflects captive demand from an affiliated laboratory rather than an external market price.
+
+\section{Empirical Implications}
+\label{sec:empirical}
+
+The model is stylized, but it generates several predictions that are, at least in principle, falsifiable against existing and emerging data on the LLM market. We state each as a testable claim tied to the specific model object that produces it.
+
+\paragraph{1. Under binding capacity, prices track compute supply, not lab entry.} When capacity binds, the equilibrium consumer price depends on aggregate compute $K$ but is invariant to the number of laboratories serving the market, holding the frontier fixed (the capacity-binding neutrality result of Proposition~\ref{prop:capacity-neutrality} in Section~\ref{sec:oligopoly}, proved in Appendix~\ref{app:cournot}, where $P^*=A-B\cdot K/a$ contains no $n$). The observable implication is that, in periods when inference demand exceeds capacity at near-cost prices, the price for a given quality tier should respond to changes in aggregate GPU supply while being roughly insensitive to additional providers entering. This can be checked against the price, performance, and supply series assembled by \citet{demirerEtAl2025}.
+
+\paragraph{2. The leader's markup compresses on competitor releases.} The leader's markup satisfies the Lerner condition $(P_L-\kappa_L)/P_L=1/\epsilon_{LL}$ of Section~\ref{sec:oligopoly}. A close-substitute release by a rival raises the leader's own-price elasticity $\epsilon_{LL}$ and compresses its markup. The prediction is that a frontier model's price, relative to its quality, should fall discretely in the period following a rival's near-frontier release rather than declining on a smooth schedule. This is checkable against the release-timed price-cut patterns documented by \citet{demirerEtAl2025}.
+
+\paragraph{3. For trailing labs, subscription share $\gg$ usage share $\gg$ compute share.} Because multi-homing lets a provider hold a broad subscriber base while drawing only a small fraction of inference traffic, a trailing laboratory's subscription (subscriber) share should exceed its usage (traffic) share, which should in turn exceed its compute share (Appendix~\ref{app:subscriptions}). This ordering is checkable against the multi-homing and post-release adoption evidence in \citet{fradkin2025demand}.
+
+\paragraph{4. Hyperscaler rental prices rise after major releases.} A major release shifts the leading laboratory's private marginal value $\widehat v_L$ upward, and once competitors catch up it raises the best losing bidder's value $\widehat v_F$, which sets the clearing compute price $r^*\simeq\max\{c,\widehat v_F\}$. The same force appears in the hyperscaler capital-expenditure Euler condition of Section~\ref{sec:model-race}, where higher expected future scarcity rents $\lambda_{h,t+s}$ raise current investment. The prediction is that wholesale rental prices for inference-capable compute, and hyperscaler capital expenditure, should rise following breakthrough releases that expand inference demand. The industry-structure forces behind this concentration of value in compute are discussed by \citet{korinekVipra2025}.
+
+\section{Limitations}
+\label{sec:limitations}
+
+Several mechanisms that matter for the LLM market are outside the model.
+
+\paragraph{No labor-market side.} Downstream willingness to pay is a primitive here, and we do not model the labor market that generates much of it. As prices rise, firms will substitute between human and model labor, and in some cases humans may remain cheaper than models; this is noted only in a footnote in the introduction and deserves separate treatment.
+
+\paragraph{No open-weight or self-hosted models.} We model all inference as purchased from laboratories, but open-weight models that purchasers can self-host act as a competitive fringe. On commodity tasks they cap both the wholesale compute price $r^*$ and the laboratory markup $\mu_\ell$ at the cost of self-hosting, effectively turning the trailing-laboratory tier into a zero-price competitor for undifferentiated work. This is a genuinely missing mechanism rather than a harmless normalization, and it would blunt several of the rent results on commoditized tasks.
+
+\paragraph{Exogenous demand growth.} Demand is taken as given at each date. In reality adoption is endogenous to price, capability, and complementary investment, and the feedback from falling quality-adjusted prices back to demand is a first-order driver of the very scarcity the model studies.
+
+\paragraph{No agentic or inference-time-compute distinction.} We treat FLOPs per output $a_m$ as a technological primitive that falls with productivity. Inference-time-compute and agentic workflows instead raise the compute required per completed task, which could offset or reverse the downward trend in $a_m$ and change the allocation over time.
+
+\paragraph{A single homogeneous FLOP, and no separate power constraint.} Compute is a scalar constrained resource. Appendix~\ref{app:extensions} partially relaxes this by allowing multiple constrained resources, but the baseline abstracts from heterogeneous accelerators, memory bandwidth, and interconnect. Relatedly, we impose no energy or power constraint separate from FLOPs, though power availability and grid interconnection may bind before compute does.
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+A fixed stock of inference hardware creates an upstream scarcity market in which models compete for compute according to the commercial value they generate per constrained FLOP. Persistent laboratory advantage should be represented multiplicatively because a fixed additive increment becomes negligible relative to an exponentially advancing frontier. This advantage shifts a laboratory's marginal-value schedule upward, but does not by itself imply complete market dominance.
+
+The integrated-industry benchmark identifies the joint-profit-maximizing allocation of compute, while the oligopoly model shows how downstream market power changes prices and rent division. This joint-profit benchmark coincides with the welfare-maximizing allocation only under perfect price discrimination or price-taking behavior; in general it equalizes marginal net revenue rather than marginal social value per FLOP. Purchaser-facing prices contain physical cost, a possible hyperscaler scarcity rent, and a model-provider markup. When capacity is tightly binding, oligopoly may primarily transfer rents from hyperscalers to laboratories. When capacity is slack, hyperscaler scarcity rents disappear but laboratory markups can persist.
+
+The dynamic model connects current inference, training investment, and future GPU capacity. Lumpy model releases create temporary leadership rents and induce both laboratories and hyperscalers to invest. Under a common global asymptote, differential model rents tend to disappear, though oligopoly markups may remain. Firm-specific asymptotes preserve durable differentiation. Continuing improvement creates repeated episodes of temporary leadership, with laboratories capturing more surplus after breakthroughs and hyperscalers gaining bargaining power as competitors catch up.
+
+\appendix
+
+\section{Bargaining, Auctions, and Oligopsony}
+\label{app:bargaining}
+
+The main text uses a competitive upstream auction as a benchmark. This appendix gives a bilateral Nash-bargaining formulation and clarifies the effect of concentrated laboratory demand for compute.
+
+Consider a marginal block of compute allocated by hyperscaler $h$ to laboratory $\ell$. Let $\widehat v_\ell$ be the laboratory's private marginal profit per FLOP. Let $\bar v_h$ denote the hyperscaler's value from its best alternative use of the same FLOP, including physical operation or sale to another laboratory:
+
+\begin{equation}\bar v_h\equiv\max\{c,\widehat v_F\}.\end{equation}
+
+The match-specific surplus is
+
+\begin{equation}S_{\ell h}=\widehat v_\ell-\bar v_h.\end{equation}
+
+Suppose the laboratory has Nash bargaining weight $\zeta\in[0,1]$. If $r_{\ell h}$ is the negotiated wholesale price per FLOP, the Nash solution maximizes
+
+\begin{equation}\left(\widehat v_\ell-r_{\ell h}\right)^\zeta\cdot\left(r_{\ell h}-\bar v_h\right)^{1-\zeta}.\end{equation}
+
+The negotiated price is
+
+\begin{equation}r_{\ell h}=\zeta\cdot\bar v_h+\left(1-\zeta\right)\cdot\widehat v_\ell.\end{equation}
+
+The laboratory receives
+
+\begin{equation}\pi_\ell^F=\widehat v_\ell-r_{\ell h}=\zeta\cdot\left(\widehat v_\ell-\bar v_h\right),\end{equation}
+
+while the hyperscaler's incremental gain over its outside option is
+
+\begin{equation}r_{\ell h}-\bar v_h=\left(1-\zeta\right)\cdot\left(\widehat v_\ell-\bar v_h\right).\end{equation}
+
+The hyperscaler's total operating margin over physical cost is
+
+\begin{equation}r_{\ell h}-c=\underbrace{\bar v_h-c}_{\text{general scarcity rent}}+\underbrace{\left(1-\zeta\right)\cdot\left(\widehat v_\ell-\bar v_h\right)}_{\text{share of match-specific surplus}}.\end{equation}
+
+With many substitutable hyperscalers competing for a leading laboratory, $\zeta$ may be large and the laboratory may capture most match-specific surplus. With fixed aggregate hardware and many laboratories bidding for it, $\bar v_h$ may be close to the value generated by the best losing bidder, allowing the hyperscaler to capture most general scarcity rent.
+
+If only a few laboratories purchase frontier compute, they may exercise oligopsony. They can reduce the wholesale compute price below the competitive-auction benchmark by restricting or coordinating demand, subject to the hyperscaler's outside options. A market with few laboratories and few hyperscalers is therefore a bilateral oligopoly: downstream oligopoly raises purchaser prices, while upstream oligopsony transfers part of the compute scarcity rent from hyperscalers to laboratories.
+
+\section{Dynamic Operation by Trailing Laboratories}
+\label{app:dynamic-loss}
+
+Let $s_{jt}$ summarize trailing laboratory $j$'s strategic state, including model capability, customer relationships, deployment knowledge, data, reputation, and future access to capital or compute. Let inference activity be $x_{jt}$, and suppose the state evolves according to
+
+\begin{equation}s_{j,t+1}=H(s_{jt},x_{jt})+\varepsilon_{j,t+1}.\end{equation}
+
+The laboratory's value function is
+
+\begin{equation}V_j(s)=\max_{x\geq0}\left\{\pi_j^{\mathrm{current}}(s,x)+\delta\cdot\mathbb E\left[V_j\left(H(s,x)+\varepsilon'\right)\right]\right\}.\end{equation}
+
+Operating at level $x>0$ is preferable to non-operation when
+
+\begin{equation}\pi_j^{\mathrm{current}}(s,x)-\pi_j^{\mathrm{current}}(s,0)+\delta\cdot\left[\mathbb E[V_j(s')\mid s,x]-\mathbb E[V_j(s')\mid s,0]\right]\geq0.\end{equation}
+
+If current incremental profit is negative, operation is rational only when the discounted improvement in continuation value is large enough to offset the loss. The transition effect may reflect customer retention, useful deployment data, operational learning, reputation, distribution, or an increased probability of financing or successfully training a future model. These benefits should not be assumed. If inference deployment contributes little to frontier research capability, directing the same resources toward research may dominate subsidized inference operation.
+
+\section{Subscription Pricing and Multi-Homing}
+\label{app:subscriptions}
+
+Provider $m$ offers a subscription contract $(\phi_m,\rho_m)$, where $\phi_m\geq0$ is a fixed subscription fee and $\rho_m$ is the marginal price of a standardized output after subscribing. A non-subscriber may instead pay spot price $P_m^{\mathrm{spot}}$, with
+
+\begin{equation}\rho_m<P_m^{\mathrm{spot}}.\end{equation}
+
+The fixed fee gives the provider guaranteed revenue in exchange for discounted future usage. If purchaser $i$ expects to buy $y_{im}$ outputs from provider $m$, the single-provider subscription condition is
+
+\begin{equation}\left(P_m^{\mathrm{spot}}-\rho_m\right)\cdot\mathbb E[y_{im}]\geq\phi_m.\end{equation}
+
+Let purchaser $i$ face task types indexed by $k$, with $T_{ik}$ expected tasks of each type. Let the net value of routing task $k$ to subscribed provider $m$ be
+
+\begin{equation}V_{imk}=\theta_i\cdot Q_{mk}-\rho_m.\end{equation}
+
+If $S_i$ is the purchaser's subscription portfolio, expected utility is
+
+\begin{equation}U_i(S_i)=\sum_k T_{ik}\cdot\max\left\{0,\max_{m\in S_i}V_{imk}\right\}-\sum_{m\in S_i}\phi_m.\end{equation}
+
+The purchaser chooses
+
+\begin{equation}S_i^*=\arg\max_{S_i\subseteq\{1,\ldots,M\}}U_i(S_i).\end{equation}
+
+Define the best net value currently available for task $k$ from portfolio $S$ as
+
+\begin{equation}B_{ik}(S)=\max\left\{0,\max_{m\in S}\left(\theta_i\cdot Q_{mk}-\rho_m\right)\right\}.\end{equation}
+
+Under deterministic quality, the incremental value of adding provider $j$ is
+
+\begin{equation}\Omega_{ij}(S)=\sum_k T_{ik}\cdot\left[\theta_i\cdot Q_{jk}-\rho_j-B_{ik}(S)\right]_+-E_{ij},\qquad [z]_+\equiv\max\{z,0\},\end{equation}
+
+where $Q_{jk}$ is the quality of provider $j$'s model on task $k$ (as $Q_{mk}$ above, with $m=j$) and $E_{ij}\geq0$ is a fixed evaluation cost the purchaser incurs to assess provider $j$.
+
+Purchaser $i$ adds provider $j$ when
+
+\begin{equation}\Omega_{ij}(S)\geq\phi_j.\end{equation}
+
+This mechanism produces multi-homing even under complete information. Provider $j$ need not be the purchaser's best provider on average; it need only be sufficiently better or cheaper for some tasks to justify its fixed fee.
+
+If task-specific quality is uncertain but observed before routing, let $Q_{ijk}$ be random. The incremental option value becomes
+
+\begin{equation}\Omega_{ij}(S)=\sum_k T_{ik}\cdot\mathbb E\left[\theta_i\cdot Q_{ijk}-\rho_j-B_{ik}(S)\right]_+-E_{ij}.\end{equation}
+
+If quality is learned only by testing a provider, the testing decision requires a separate information-acquisition model rather than a fixed evaluation cost alone.
+
+Let $n_m$ be the mass of subscribers and $Y_m$ total subscriber usage. If the wholesale compute price is $r_m$, marginal output cost is
+
+\begin{equation}\kappa_m=b_m+a_m\cdot r_m.\end{equation}
+
+Operating profit is
+
+\begin{equation}\Pi_m=\phi_m\cdot n_m+\left(\rho_m-\kappa_m\right)\cdot Y_m-C_m,\end{equation}
+
+where $C_m$ is provider $m$'s fixed cost per period.
+
+A provider may set $\rho_m<\kappa_m$ if fixed subscription revenue covers the usage subsidy:
+
+\begin{equation}\phi_m\cdot n_m\geq\left(\kappa_m-\rho_m\right)\cdot Y_m+C_m.\end{equation}
+
+Multi-homing separates subscription share, usage share, and compute share. A trailing provider can have a broad subscriber base while receiving a much smaller fraction of actual inference traffic.
+
+\section{A Symmetric Cournot Example}
+\label{app:cournot}
+
+Suppose $n$ model providers sell a homogeneous inference service with inverse demand
+
+\begin{equation}P(Y)=A-B\cdot Y,\qquad Y=\sum_{\ell=1}^{n}y_\ell.\end{equation}
+
+Each output requires $a$ FLOPs and has non-compute cost $b$. Given wholesale compute price $r$, marginal cost is $\kappa=b+a\cdot r$. The symmetric Cournot equilibrium is
+
+\begin{equation}y_\ell=\frac{A-\kappa}{B\cdot(n+1)},\qquad Y=\frac{n\cdot(A-b-a\cdot r)}{B\cdot(n+1)}.\end{equation}
+
+If aggregate capacity binds, $a\cdot Y=K$, so
+
+\begin{equation}r^*=\frac{A-b}{a}-\frac{B\cdot(n+1)\cdot K}{a^2\cdot n}.\end{equation}
+
+Consumer price is
+
+\begin{equation}P^*=A-\frac{B\cdot K}{a}.\end{equation}
+
+Conditional on full utilization of fixed capacity, consumer price depends on aggregate capacity but not directly on the number of model providers. The number of providers instead changes the division of rent. Each laboratory's markup is
+
+\begin{equation}P^*-\kappa=\frac{B\cdot K}{a\cdot n},\end{equation}
+
+and aggregate laboratory operating profit is
+
+\begin{equation}\Pi^{\mathrm{labs}}=\frac{B\cdot K^2}{a^2\cdot n}.\end{equation}
+
+As $n$ increases, laboratory oligopoly rent falls and the wholesale compute price rises, transferring more of the fixed-capacity rent to hyperscalers. At physical compute cost $r=c$, Cournot output is
+
+\begin{equation}Y^{\mathrm{Cournot}}(c)=\frac{n\cdot(A-b-a\cdot c)}{B\cdot(n+1)}.\end{equation}
+
+Capacity binds only when
+
+\begin{equation}K<\frac{a\cdot n\cdot(A-b-a\cdot c)}{B\cdot(n+1)}.\end{equation}
+
+Above this threshold, capacity is slack, $r^*=c$, hyperscaler scarcity rents vanish, and laboratories retain ordinary Cournot markups.
+
+\section{Task Heterogeneity, Unit Invariance, and Multiple Resource Constraints}
+\label{app:extensions}
+
+\subsection{Task-specific productivity}
+
+If model performance differs across tasks, let $Q_{m,k}$ denote model $m$'s economically relevant quality on task $k$, and define
+
+\begin{equation}q_{m,k}=\frac{Q_{m,k}}{a_{m,k}}.\end{equation}
+
+Purchaser $i$, whose task is $k_i$, receives utility
+
+\begin{equation}u_{im}=\theta_i\cdot Q_{m,k_i}-P_{m,k_i}.\end{equation}
+
+A model may trail in general capability while generating the highest marginal net revenue per FLOP on a particular class of tasks. This provides a natural basis for coexistence without requiring a single scalar ranking of all models.
+
+\subsection{Output-unit invariance}
+
+A pure change in the definition of a standardized output unit should not alter the economic allocation. Consider a rescaling by $\gamma>0$:
+
+\begin{equation}a_m'=\gamma\cdot a_m,\qquad Q_m'=\gamma\cdot Q_m,\qquad P_m'=\gamma\cdot P_m,\qquad b_m'=\gamma\cdot b_m,\qquad y_m'=\frac{y_m}{\gamma}.\end{equation}
+
+Then aggregate compute, revenue, cost, and quality are unchanged:
+
+\begin{equation}a_m'\cdot y_m'=a_m\cdot y_m,\qquad P_m'\cdot y_m'=P_m\cdot y_m,\qquad Q_m'\cdot y_m'=Q_m\cdot y_m.\end{equation}
+
+The normalized quantities are also unchanged:
+
+\begin{equation}q_m'=q_m,\qquad p_m'=p_m,\qquad \frac{b_m'}{a_m'}=\frac{b_m}{a_m}.\end{equation}
+
+Thus merely redefining the output unit does not create an efficiency advantage. A genuine reduction in inference requirements matters when it preserves more than a proportional share of purchaser value or lowers cost per unit of economically relevant quality.
+
+\subsection{Multiple constrained resources}
+
+FLOPs may not be the only binding resource. Memory capacity, memory bandwidth, latency, networking, power, or accelerator-specific availability may constrain inference independently.
+
+Let $a_m^r$ be the amount of resource $r$ required per output, let $K^r$ be aggregate capacity of that resource, and let $c_r$ be its physical marginal cost. The allocation problem becomes
+
+\begin{equation}\max_{\mathbf y\geq0}\;R(\mathbf y;\mathbf Q)-\sum_m b_m\cdot y_m-\sum_r c_r\cdot\sum_m a_m^r\cdot y_m\quad\text{subject to}\quad\sum_m a_m^r\cdot y_m\leq K^r\;\text{for each }r.\end{equation}
+
+If $\lambda_r$ is the shadow price of resource $r$, an active model satisfies
+
+\begin{equation}MR_m-b_m=\sum_r\left(c_r+\lambda_r\right)\cdot a_m^r.\end{equation}
+
+The general allocation rule is therefore to compare the marginal revenue created by additional inference effort with the shadow-priced vector of constrained resources, rather than with FLOPs alone.
+
+\subsection{Nonseparable downstream demand}
+
+If one laboratory's output directly affects the marginal value of another laboratory's output, write laboratory $\ell$'s marginal value as
+
+\begin{equation}v_\ell(x_\ell,\mathbf x_{-\ell}).\end{equation}
+
+A candidate allocation in which leader $L$ receives all capacity is optimal only if
+
+\begin{equation}v_L(K,\mathbf 0_{-L})\geq v_j\left(0;x_L=K,\mathbf 0_{-(L,j)}\right)\end{equation}
+
+for every follower $j$. This is the nonseparable counterpart to the simpler main-text condition $v_L(K)\geq\max_j v_j(0)$.
+
+\section{Two-Model Demand System: Derivations}
+\label{app:two-model}
+
+This appendix collects the calculations behind Lemma~\ref{lem:two-model} and Proposition~\ref{prop:breakthrough}. The segmentation, demand system, inverse demands, and revenue function are stated in Section~\ref{subsec:two-model-demand}; they are taken as given here.
+
+\subsection{Concavity of the revenue function}
+
+Differentiating $R(\mathbf y;\mathbf Q)=\bar\theta(Q_L y_L+Q_F y_F)-(\bar\theta/N)(Q_L y_L^{2}+2Q_F y_L y_F+Q_F y_F^{2})$ twice gives the constant Hessian
+
+\begin{equation}\nabla^{2}R=-\frac{2\bar\theta}{N}\begin{pmatrix}Q_L & Q_F\\ Q_F & Q_F\end{pmatrix}.\end{equation}
+
+Its leading principal minor is $-2\bar\theta Q_L/N<0$, and its determinant is $(2\bar\theta/N)^{2}\,Q_F(Q_L-Q_F)>0$ because $Q_L>Q_F$. The Hessian is therefore negative definite, so $R$ is strictly concave wherever the three-tier segmentation holds. This is part~(1) of Lemma~\ref{lem:two-model}.
+
+\subsection{Productivity and marginal net revenue per FLOP}
+
+The marginal revenues are
+
+\begin{equation}MR_L=\frac{\partial R}{\partial y_L}=\bar\theta\,Q_L-\frac{2\bar\theta}{N}\left(Q_L y_L+Q_F y_F\right),\qquad MR_F=\frac{\partial R}{\partial y_F}=\bar\theta\,Q_F\left[1-\frac{2(y_L+y_F)}{N}\right].\end{equation}
+
+Writing $Q_m=a_m q_m$ and $v_m=(MR_m-b_m)/a_m$, and holding output quantities fixed,
+
+\begin{equation}\frac{\partial v_L}{\partial q_L}=\bar\theta\left(1-\frac{2y_L}{N}\right),\qquad \frac{\partial v_F}{\partial q_F}=\bar\theta\left(1-\frac{2(y_L+y_F)}{N}\right).\end{equation}
+
+Both are strictly positive when the served mass $y_L+y_F$ is below $N/2$, i.e., when capacity is scarce enough that only the higher-$\theta$ purchasers are served. This is part~(2) of Lemma~\ref{lem:two-model}.
+
+\subsection{Bertrand equilibrium and comparative statics}
+
+Let laboratories set prices with constant compute-inclusive marginal costs $\kappa_L,\kappa_F$. The leader's residual demand slope,
+
+\begin{equation}\frac{\partial D_L}{\partial P_L}=-\frac{N}{(Q_L-Q_F)\,\bar\theta},\end{equation}
+
+is a primitive of the demand system, requiring no equilibrium argument: its magnitude is strictly decreasing in the quality gap $Q_L-Q_F$, so a wider gap makes the leader's residual demand less price-sensitive, and closer substitutes (a smaller gap) make it more sensitive. The interior first-order condition gives the leader's Lerner markup $\mu_L\equiv P_L-\kappa_L=D_L\big/\lvert\partial D_L/\partial P_L\rvert$.
+
+To exhibit the equilibrium comparative statics with prices adjusting on both sides, take the normalization $\kappa_L=\kappa_F=0$ and $N=\bar\theta=1$. Solving both first-order conditions gives
+
+\begin{equation}P_L=\frac{2Q_L(Q_L-Q_F)}{4Q_L-Q_F},\qquad P_F=\frac{Q_F(Q_L-Q_F)}{4Q_L-Q_F},\end{equation}
+
+so that the leader's markup is $\mu_L=P_L$, its output is $D_L=P_L/(Q_L-Q_F)=2Q_L/(4Q_L-Q_F)$, and its operating profit is
+
+\begin{equation}\pi_L=P_L\,D_L=\frac{P_L^{2}}{Q_L-Q_F}=\frac{4Q_L^{2}(Q_L-Q_F)}{(4Q_L-Q_F)^{2}}.\end{equation}
+
+Direct differentiation yields
+
+\begin{equation}\frac{\partial \mu_L}{\partial Q_L}=\frac{2(4Q_L^{2}-2Q_L Q_F+Q_F^{2})}{(4Q_L-Q_F)^{2}}>0,\qquad \frac{\partial \mu_L}{\partial Q_F}=-\frac{6Q_L^{2}}{(4Q_L-Q_F)^{2}}<0,\end{equation}
+
+and, similarly, $\partial\pi_L/\partial Q_L>0$ and $\partial\pi_L/\partial Q_F<0$, with $\mu_L\to0$ and $\pi_L\to0$ as $Q_F\to Q_L$. The leader's markup and profit—and hence its differential private value of compute $\widehat v_L-\widehat v_F$, which inherits the sign of $\partial\pi_L/\partial(Q_L-Q_F)$—therefore rise with the quality gap and vanish as qualities converge. This reduced Bertrand game has no explicit compute endowment constraint, so $\widehat v_L-\widehat v_F$ here should be read as (proportional to) the profit gain from a marginal relaxation of such a constraint rather than as a shadow price read directly off the first-order conditions. Because $\pi_L$ in this game is proportional to the value the leader generates per unit of compute-inclusive marginal cost, a marginal relaxation of a binding compute endowment raises $\pi_L$ in proportion to $\partial\pi_L/\partial(Q_L-Q_F)$, so the marginal value of compute inherits the same comparative-static sign as $\pi_L$ in the quality gap.
+
+With positive constant marginal costs the same comparative-static signs can be verified directly by the same differentiation, and the leader's equilibrium own-price elasticity $\epsilon_{LL}=P_L/(P_L-\kappa_L)=P_L/\mu_L$ then falls as the gap widens and rises as it narrows; under the zero-cost normalization $\epsilon_{LL}$ is pinned at unity by the first-order condition, which is why the elasticity statement is read off the residual-demand slope and the Lerner identity rather than from this special case. These are the standard comparative statics of the uncovered-market vertical-differentiation duopoly \citep{shakedSutton1982,singhVives1984}, and they are exactly the arrow chains asserted in Section~\ref{sec:technology-regimes}.
+
+\bibliographystyle{apalike}
+\bibliography{paper}
+
+\end{document}
