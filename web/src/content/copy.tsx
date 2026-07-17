@@ -459,25 +459,38 @@ export const sections: Section[] = [
         </p>
         <p>
           <strong>Proposition 5 (segmented entry).</strong> Split the market into{' '}
-          <Katex math="S" /> segments, each with one lab as sole intended provider. These labs are at
-          exact quality parity — quality can't be what protects a niche here, since S2's condition
-          needs a rival's value at zero to sit at or below the market rate, and equal-quality rivals
-          would clear that bar easily. What protects the niche instead is a purchaser friction{' '}
-          <Katex math="s" /> — a switching, integration, or evaluation cost — for patronizing anyone
-          but the assigned lab. Working the friction backward from S2's own protection condition gives
-          a minimum size it has to clear:
+          <Katex math="S" /> segments, each with one lab as sole intended provider, all at exact
+          quality parity. Quality can't be what protects a niche here: S2's condition needs a
+          rival's value at zero to sit at or below the market rate, and an identical-quality rival
+          clears that bar exactly. What protects the niche instead is a purchaser friction{' '}
+          <Katex math="s" />. It has to be the <em>recurring</em> kind — latency, a privacy cost,
+          per-task compliance overhead, paid on every purchase — not a one-time cost to evaluate or
+          integrate a new provider. Work the recurring friction backward from S2's own protection
+          condition, keeping the units straight (a per-output margin isn't a per-FLOP price). That
+          gives a minimum size it has to clear:
         </p>
-        <Katex display math="s \ge s_{\min} \equiv \frac{BK}{a} - r^*." />
+        <Katex display math="s \ge s_{\min} \equiv \frac{BK}{a}." />
         <p>
-          Below that threshold a same-quality rival can still profitably invade; at or above it, each
-          lab's flow profit becomes
+          That's exactly the segment's markup from part (1): a same-quality rival produces at the same
+          cost, so the friction has to absorb the entire margin the niche pays out — nothing less will
+          do. Below that threshold a same-quality rival can profitably undercut and invade; at or
+          above it, each lab's flow profit becomes
         </p>
         <Katex display math="\pi^{\text{seg}}(S) = \frac{B K^2}{a^2 S}," />
         <p>
           which is <Katex math="S" /> times the head-on figure, because a segment leader prices
           against its own residual demand rather than as one of <Katex math="n" /> Cournot rivals —
-          this part of the math doesn't care why rivals stay out, only that they do. Free entry then
-          supports up to
+          this part of the math doesn't care why rivals stay out, only that they do.
+        </p>
+        <p>
+          But that friction test only bites against rivals who already have a quality-parity model —
+          in practice, the other <Katex math="S-1" /> assigned labs, whose training cost is sunk and
+          who can redeploy compute into a neighboring segment for free. A lab that hasn't trained a
+          frontier model yet faces a different wall: it has to pay the full fixed cost{' '}
+          <Katex math="\mathcal F" /> just to contest one segment, and for large enough{' '}
+          <Katex math="\mathcal F" /> that alone keeps it out, no friction required. Fresh entrants are
+          kept out by <Katex math="\mathcal F" />; the labs already in the game are kept out by
+          friction alone. Free entry then supports up to
         </p>
         <Katex display math="\bar S = \left\lfloor \frac{B K^2}{a^2 (\rho+\Lambda)\,\mathcal F} \right\rfloor" />
         <p>
@@ -485,13 +498,26 @@ export const sections: Section[] = [
           <Katex math="A - BK/a" /> is unchanged, so segmentation only moves rent from hyperscalers
           to labs. The exact square is special to the symmetric linear case, but the direction is
           general: defensible niches raise how many labs a given profit pool can carry past the
-          fixed-cost bar — provided the friction actually clears <Katex math="s_{\min}" /> and
-          capacity actually binds under the segmented configuration, which takes strictly less
-          capacity than binding under head-on competition among the same labs would. What the model
-          does not deliver is an actual number of labs, nor an estimate of whether real switching
-          costs clear <Katex math="s_{\min}" />. The fixed cost <Katex math="\mathcal F" /> here counts
-          compute alone, leaving out talent, data, and failed runs. It also leaves open the
-          entry-quality escalation and any cross-segment economies of scope.
+          fixed-cost bar. That requires two things to hold: the friction actually clears{' '}
+          <Katex math="s_{\min}" />, and capacity actually binds under the segmented configuration —
+          which takes strictly less capacity than binding under head-on competition among the same
+          labs would.
+        </p>
+        <p>
+          Two things this result does <em>not</em> show. First, <Katex math="\bar S" /> is a ceiling
+          on what the profit pool can carry, not a prediction that <Katex math="S" /> separate labs
+          actually form. Nothing stops one lab from paying <Katex math="\mathcal F" /> once, holding
+          the friction-free assigned slot in every segment, and collecting all <Katex math="S" />{' '}
+          segments' profit itself. That configuration is just as stable and strictly more profitable
+          for whichever lab gets there first, and the model has no reason built in for why acquiring a
+          segment should cost anything <em>per segment</em>. Second, the protection assumes purchasers
+          stick to one segment. S6 below shows a purchaser whose needs span several segments rationally
+          subscribes to more than one lab. That's exactly the multi-homing that, once it happens,
+          extinguishes the one-time part of a purchaser's friction and leaves only the recurring part
+          still working.
+          The fixed cost <Katex math="\mathcal F" /> here counts compute alone, leaving out talent,
+          data, and failed runs. It also leaves open the entry-quality escalation and any cross-segment
+          economies of scope.
         </p>
       </>
     ),
@@ -602,6 +628,9 @@ export const sections: Section[] = [
           That sums, task by task, only the amount by which <Katex math="j" /> beats the incumbent
           best (the <Katex math="[\cdot]_+" /> keeps just the wins), net of an evaluation cost{' '}
           <Katex math="E_{ij}" />. The purchaser subscribes when <Katex math="\Omega_{ij} \ge \phi_j" />.
+          Pay it once, though, and it's gone: <Katex math="E_{ij}" /> is a one-time cost of adding a
+          provider, not the recurring per-purchase friction S4's segment-protection result needs.
+          That's exactly why multi-homing, once it clears, stops protecting anyone's niche.
         </p>
         <p>
           A provider can even set its per-use price below its own marginal cost,{' '}
