@@ -12,7 +12,7 @@ export const hero = {
   title: 'Economics for Near-future AI',
   // The motivating question — a concrete thing a reader is already wondering, not a thesis in disguise.
   question:
-    'If AI users keep consuming more tokens, usage will grow faster than the hardware needed. If not, the labs will need to compete to offer the lowest prices. But if demand does outrun supply, prices will rise, and hyperscalers or AI Labs will profit. But who collects the extra dollars, and does a single strongest model win, or is it the strongest per dollar? Scarcity is pretty standard for economics, and none of this is novel work, just standard tools - price differentiation, demand curves, oligopolies, cost structure, and profits - applied to a new market.',
+    "If AI users keep consuming more tokens, demand will outrun the hardware built to serve them, prices will rise, and someone will profit. If it doesn't, labs will compete on price instead. Either way, two questions follow: who collects the extra dollars, and does a single strongest model win, or just the strongest per dollar? Scarcity is a standard problem in economics, and nothing here is a novel tool — just price differentiation, demand curves, oligopoly, cost structure, and profit, applied to a new market.",
   answerLead: "tl;dr?",
   // Central narrative sentence — must appear verbatim (design constraint 7).
   sentence:
@@ -26,10 +26,10 @@ export const intro: { title: string; body: ReactNode; derivation: ReactNode } = 
       <p>
         The market for large-language-model inference has two economically distinct layers. An{' '}
         <Term term="modelLaboratory">AI lab</Term> builds an AI system and sells its
-        outputs; a <Term term="hyperscaler">hyperscaler</Term> owns the datacenters and GPUs. Of ccourse, they can be the same firm, or effectively so since the largest hardware owners hold stakes in the laboratories they host, and leading laboratories are contracting for hardware of their own. But the question here is how the money divides between the two layers, and whether NVIDIA, OpenAI or Anthropic, or X is the biggest winner. That's because for the next several years the number of GPUs that will e produced and sold is roughly fixed, while demand for valuable AI output seems to be growing.
+        outputs; a <Term term="hyperscaler">hyperscaler</Term> owns the datacenters and GPUs. Of course, they can be the same firm, or effectively so — the largest hardware owners hold stakes in the labs they host, and leading labs are contracting for hardware of their own. But the question here is how the money divides between the two layers, and whether NVIDIA, OpenAI or Anthropic, or X is the biggest winner. That's because for the next several years the number of GPUs that will be produced and sold is roughly fixed, while demand for valuable AI output seems to be growing.
       </p>
       <p>
-        The gap between costs to run the models and the limited supply (<Term term="scarcity">scarcity</Term>) is what microeconomics studies. AI usage consumes <Term term="compute">compute</Term>, and when it runs short, the labs need to decide what to sell. A more capable model only wins if it squeezes more value from each <Term term="flop">FLOP</Term>{' '} it burns. Previous discussions have been about AI companies competing for having the best model, but if the scarce thing being rationed is the compute itself, the best model may not win. The model answers four questions: how should compute be allocated, how would profits be split between laboratories and hardware owners, whether one laboratory takes the whole market or trailing labs survive, and how model releases and GPU build-out change all of this over time.
+        The gap between costs to run the models and the limited supply (<Term term="scarcity">scarcity</Term>) is what microeconomics studies. AI usage consumes <Term term="compute">compute</Term>, and when it runs short, the labs need to decide what to sell. A more capable model only wins if it squeezes more value from each <Term term="flop">FLOP</Term>{' '} it burns. Previous discussions have focused on which AI company has the best model, but if the scarce thing being rationed is compute itself, the best model may not win. The model answers four questions: how should compute be allocated, how would profits be split between laboratories and hardware owners, whether one laboratory takes the whole market or trailing labs survive, and how model releases and GPU build-out change all of this over time.
       </p>
     </>
   ),
@@ -40,7 +40,7 @@ export const intro: { title: string; body: ReactNode; derivation: ReactNode } = 
         quality <Katex math="Q" /> at a maximum price <Katex math="\theta Q - P" />. The users buy the model giving the best bang for the buck, or what an economist calls highest non-negative utility. And willingness to pay varies across purchasers, so the market sorts itself into quality tiers. We'll relax the assumption of a single global quality value for all tasks below, but for now it's enough.
       </p>
       <p>
-        The key quantity is <Term term="qualityAdjustedProductivity">quality-adjusted productivity</Term>, <Katex math="q_m \equiv Q_m / a_m" /> — or value delivered per{' '}<Term term="flop">FLOP</Term>, where <Katex math="a_m" /> is the compute one standardized output requires. (And what counts as one "output", whether a million tokens, or a single task, and so on, is only a normalization: Appendix E shows the allocation doesn't depend on it.
+        The key quantity is <Term term="qualityAdjustedProductivity">quality-adjusted productivity</Term>, <Katex math="q_m \equiv Q_m / a_m" /> — or value delivered per{' '}<Term term="flop">FLOP</Term>, where <Katex math="a_m" /> is the compute one standardized output requires. What counts as one "output" — a million tokens, a single task, or something else — is only a normalization: Appendix E shows the allocation doesn't depend on it.
       </p>
     </>
   ),
@@ -65,9 +65,9 @@ export const sections: Section[] = [
     body: (
       <>
         <p>
-          If companies each have a fixed amount of compute to use, but can get different quantity and
-          quality of outputs, the companies will split the compute with a simple rule: hand each
-          unit to wherever it earns them the most money right now. This gives us typical downward sloping
+          Suppose each company has a fixed amount of compute, but earns different quantity and
+          quality of output from it. Firms split that compute by a simple rule: send each
+          unit wherever it earns the most money right now. This gives us typical downward-sloping
           demand, since the first place they sell is the most profitable. So we can picture every
           firm's value-per-FLOP as a downward slope, and we pour in the fixed amount of compute,{' '}
           <Katex math="K" />, and the water settles at a common line.
@@ -86,15 +86,15 @@ export const sections: Section[] = [
         <p>
           Now suppose capacity doubled overnight. The water line falls: <Katex math="\lambda" />{' '}
           drops toward zero, uses that were only priced out by scarcity get served, and the rent
-          shrinks. What doesn't move is the ranking. Which company earns the most per FLOP is a fact
-          about the models, not about how much hardware exists. So capacity sets how high the rents
-          are, but it doesn't reorder who gets served first. That's why building GPUs and picking
-          winners are two separate questions. We get to both below.
+          shrinks. What doesn't move is the ranking. That ranking — which company earns the most
+          per FLOP — is a fact about the models, not about how much hardware exists. So capacity
+          sets how high the rents are, but it doesn't reorder who gets served first. That's why
+          building GPUs and picking winners are two separate questions. We get to both below.
         </p>
         <p>
-          You'd guess the most capable model gets the chips first, but it doesn't: it only gets them
-          if its extra value per FLOP is bigger, so a cheaper model that keeps most of the quality on
-          a fraction of the compute can beat a flashier one. This is the intro's point again:
+          You'd guess the most capable model gets the chips first. It doesn't. It only gets them
+          if its extra value per FLOP is bigger — so a cheaper model that keeps most of the quality
+          on a fraction of the compute can beat a flashier one. This is the intro's point again:
           capability only matters if it raises{' '}
           <Term term="qualityAdjustedProductivity">quality-adjusted productivity</Term>, value per
           FLOP.
@@ -145,36 +145,39 @@ export const sections: Section[] = [
     body: (
       <>
         <p>
-          Could one model just take the entire market? You might think the best model wins
-          everything. But once we turn that into a mathematical condition instead of a guess, we can understand why it seems much less likely. Winner-take-all means the leader buys every unit of compute, not just most of it, and no-one buys from other vendors - what the model calls{' '}
-          <Term term="winnerTakeMost">winner-take-most</Term>. Either way, it happens only when the
-          leader's value for the very last available unit still beats every follower's value for its
-          first unit:
+          Could one model take the entire market? You might think the best model wins
+          everything. Turn that hunch into a mathematical condition, though, and it looks a lot
+          less likely. Winner-take-all means the leader buys every unit of compute — not just most
+          of it — and no one buys from anyone else. Fall short of that and the market splits:
+          several labs coexist, what the model calls{' '}
+          <Term term="winnerTakeMost">winner-take-most</Term>. Either outcome turns on the same
+          test: whether the leader's value for the very last available unit still beats every
+          follower's value for its first unit.
         </p>
         <Katex display math="v_L(K) \ge \max_{j \ne L} v_j(0)." />
         <p>
-          That's a demanding test. It says the leader's least valuable funded use has to beat the
-          runner-up's most valuable one. Whether it holds depends on how fast value falls off as a
-          firm expands, which comes down to curvature, and curvature is an empirical and unclear fact.
-          So we don't really have a claim that dominance is unlikely, but it is a very specific
-          condition; moving the sliders shows you how it could occur.
+          That's a demanding test: the leader's least valuable funded use has to beat the
+          runner-up's most valuable one. Whether it holds depends on curvature — how fast value
+          falls off as a firm expands — and that's an empirical question the model leaves open.
+          We make no claim that dominance is unlikely, only that it requires a specific condition.
+          The sliders let you see exactly how it could happen.
         </p>
         <p>
-          When the condition fails, several companies can profitably coexist, and the paper gives five separate ways
-          to get there. First, labs can differ in how much value they get per FLOP. Second, a lab can be strong on
-          some tasks or customers and weak on others. Third, models can differ in ways that aren't
-          better-or-worse at all: language, latency, privacy, integration. Fourth, labs can be on different
-          compute-contract terms. And lastly, different labs can run several tiers serving different slices of
-          demand with different tradeoffs. The first one, productivity differences, is the only one simulated in the model, but the paper proves the task and segment route formally.
+          When the condition fails, several companies can profitably coexist, and the paper gives five separate
+          routes there: labs can differ in how much value they get per FLOP; a lab can be strong on
+          some tasks or customers and weak on others; models can differ in ways that aren't
+          better-or-worse at all — language, latency, privacy, integration; labs can be on different
+          compute-contract terms; or different labs can run several tiers, each serving a different slice of
+          demand. Only the first, productivity differences, is simulated in the model here — the paper proves the task-and-segment route formally.
         </p>
         <p>
-          What the proof adds is that quality can be measured task by task: coding, enterprise agents,
-          low-latency queries, a given language each carry their own score. That means we need to have the same
+          The proof shows that quality can be measured task by task. Coding, enterprise agents,
+          low-latency queries, a given language — each carries its own score. That means running the same
           winner-take-all test inside each segment, one at a time. The lab that wins one segment need
-          not win the next, and one leads for coding while another leads low-latency queries, both at
+          not win the next. One can lead coding while another leads low-latency queries, both at
           the same clearing price for compute. Global winner-take-all then needs a single lab to win every segment at once.
-          If any rival holds a segment of its own, no monopoly emerges. A single leader can still appear,
-          it's just no longer guaranteed, and the model gives the exact condition, one segment at a time.
+          If any rival holds a segment of its own, no monopoly emerges. A single leader can still appear —
+          it's just no longer guaranteed. The model gives the exact condition, one segment at a time.
         </p>
       </>
     ),
@@ -195,8 +198,8 @@ export const sections: Section[] = [
         <p>
           The concavity assumption <Katex math="G_\ell'' < 0" /> is just that, an assumption, and the
           paper says so plainly. Appendix E works out the version where a laboratory's marginal value
-          depends directly on rivals' allocations. One more thing: under oligopoly, dominance gets
-          harder, not easier. Each firm bids its private value <Katex math="\widehat v_\ell" />, which
+          depends directly on rivals' allocations. Under oligopoly, dominance gets
+          harder, not easier: each firm bids its private value <Katex math="\widehat v_\ell" />, which
           sits below the benchmark <Katex math="v_\ell" />, because it holds back output to protect
           its own inframarginal prices.
         </p>
@@ -218,25 +221,30 @@ export const sections: Section[] = [
           <Katex math="G_{\ell k}' > 0" />, <Katex math="G_{\ell k}'' < 0" />, and compute fungible
           across segments so <Katex math="\sum_\ell \sum_k x_{\ell k} \le K" />. Let{' '}
           <Katex math="r^*" /> be the value of a FLOP that clears that market. Then segment{' '}
-          <Katex math="k" /> is served by one lab <Katex math="L_k" /> alone exactly when
+          <Katex math="k" /> is served by one lab <Katex math="L_k" /> alone if and only if
         </p>
-        <Katex display math="\max_{\ell \ne L_k} v_{\ell k}(0) \le r^*," />
+        <Katex display math="v_{L_k,k}(0) > r^* \quad\text{and}\quad \max_{\ell \ne L_k} v_{\ell k}(0) \le r^*," />
         <p>
           the boxed condition restated inside a segment, with <Katex math="r^*" /> in the role of the
-          leader's value for the last FLOP. The identity of <Katex math="L_k" /> can differ across{' '}
-          <Katex math="k" />, and one lab takes all of <Katex math="K" /> only if it clears this test
-          in every served segment at once.
+          leader's value for the last FLOP. The first clause isn't decoration: without it, a segment
+          nobody serves at all — including <Katex math="L_k" /> — would also pass the test on rivals
+          alone. The identity of <Katex math="L_k" /> can differ across <Katex math="k" />, and one lab
+          takes all of <Katex math="K" /> only if it clears this test in every served segment at once.
         </p>
         <p>
-          The separability assumption is a real restriction, and the paper flags it as one: it sets
-          aside cross-segment links such as shared subscriptions, bundled contracts, or a strong
-          position in one segment lifting demand in another. Two consequences follow directly from the
-          proposition: aggregate concentration is weakly lower than a one-quality calibration would
-          predict, even while a single use case stays highly concentrated; and a purchaser whose tasks
-          span segments led by different labs rationally pays several providers, the{' '}
-          <Term term="multiHoming">multi-homing</Term> of the subscriptions section below. Two further
-          points, that displacement moves in smaller steps and that a lab's advantage is a portfolio
-          of segment positions, the paper offers as plausible readings rather than theorems.
+          The separability assumption is a real restriction, doing two separate jobs here: across
+          segments it sets aside links like shared subscriptions or a strong position in one segment
+          lifting demand in another, same as before, one level down. Within a segment it also assumes
+          a lab's value there doesn't depend on a rival's allocation in that same segment — which is
+          exactly what breaks the moment two labs actively contest one segment (the two-model system a
+          few paragraphs up is that exact case). So this proposition is scoped to segments with one
+          active lab and passive or inactive rivals; two labs slugging it out over the same segment is
+          the harder case the model doesn't close here. Within that scope, a purchaser whose tasks span
+          segments led by different labs rationally pays several providers, the{' '}
+          <Term term="multiHoming">multi-homing</Term> of the subscriptions section below. The paper
+          offers two further points as plausible readings rather than theorems: that displacement
+          moves in smaller steps, and that a lab's advantage is really a portfolio of segment
+          positions.
         </p>
       </>
     ),
@@ -264,7 +272,7 @@ export const sections: Section[] = [
         </p>
         <p>
           When capacity is <Term term="bindingVsSlack">binding</Term>, adding more labs leaves the
-          consumer price completely unchanged. It just moves money from lab markup to hyperscaler
+          consumer price completely unchanged. It moves money from lab markup to hyperscaler
           rent. Building more GPUs is what actually lowers the price. These are two different levers,
           and they do two different jobs:
         </p>
@@ -293,10 +301,10 @@ export const sections: Section[] = [
           getting served. Total output doesn't fall.
         </p>
         <p>
-          Who ends up with the scarcity rent comes down to who can walk away. If labs are bidding
-          against each other for the hardware, the hyperscaler collects it. If the deal is negotiated
-          instead, the labs claw part of it back. That's especially true when only a few big labs are
-          buying, since then they can credibly threaten to buy less.
+          The scarcity rent goes to whoever can walk away. If labs bid against each other for
+          hardware, the hyperscaler keeps the rent. If terms are negotiated instead, labs can claw
+          some back — especially when only a few big labs are buying, since then they can credibly
+          threaten to buy less.
         </p>
       </>
     ),
@@ -328,10 +336,10 @@ export const sections: Section[] = [
         <p>
           The rent split can also be bargained. With laboratory{' '}
           <Term term="nashBargaining">Nash bargaining</Term> weight <Katex math="\zeta" />, the
-          negotiated wholesale price is <Katex math="r = \zeta\,\bar v_h + (1-\zeta)\,\widehat v_\ell" />;
-          the competitive auction is the corner case where the hyperscaler's outside option
+          negotiated wholesale price is <Katex math="r = \zeta\,\bar v_h + (1-\zeta)\,\widehat v_\ell" />.
+          The competitive auction is the corner case where the hyperscaler's outside option
           approaches the best losing bidder's value, <Katex math="r^* \simeq \max\{c, \widehat v_F\}" />.
-          That auction story is the corner; in the interior every active lab's value equals{' '}
+          That auction story is the corner. In the interior, every active lab's value equals{' '}
           <Katex math="r^*" />.
         </p>
       </>
@@ -368,7 +376,7 @@ export const sections: Section[] = [
           </li>
         </ul>
         <p>
-          Whether a lab is viable at all comes down to one test: whether its very first unit of
+          One test decides whether a lab is viable at all: whether its very first unit of
           compute clears the market price. If <Katex math="v_j(0) < r^*" />, it can't profitably buy
           even one FLOP at the going rate. Then it has to specialize, lock in cheaper contracted
           compute, or leave the general-purpose market. There's one escape hatch: becoming a
@@ -380,17 +388,17 @@ export const sections: Section[] = [
           large <Term term="fixedCost">fixed cost</Term>, paid once before any revenue arrives.
           Serving one more unit of inference afterward is cheap. That combination is the textbook
           setup for a <Term term="naturalOligopoly">natural monopoly or a small natural
-          oligopoly</Term>. The number of labs comes down to how many can expect to recover the cost
-          of showing up equipped to compete. The model doesn't name a real-world number - it gives a
+          oligopoly</Term>. How many labs the market can support depends on how many can expect to
+          recover the cost of showing up equipped to compete. The model doesn't name a real-world number - it gives a
           condition and a threshold instead.
         </p>
         <p>
-          Two results come out of it. First, there's a break-even count of labs the profit pool can
+          Two results come out of it. There's a break-even count of labs the profit pool can
           carry, with a natural monopoly window: a band of training costs where the arithmetic works
-          for one lab and a second one falls short. Second, if labs specialize into different task
+          for one lab and a second one falls short. And if labs specialize into different task
           segments rather than fighting head-on for the whole market, each one only has to recover
-          its fixed cost from its own segment. So the same market can support many more labs, and
-          purchasers pay exactly what they paid before. This is the segment-level dominance from S2,
+          its fixed cost from its own segment, so the same market can support many more labs, at the
+          same price purchasers paid before. This is the segment-level dominance from S2,
           now read one level up: it changes how rents split, and it changes how many labs can exist.
           The paper works the count and the segmentation result out formally, and the derivation
           states them.
@@ -404,7 +412,7 @@ export const sections: Section[] = [
     derivation: (
       <>
         <p>
-          Whether to keep operating at a loss is really a dynamic problem. With a strategic state{' '}
+          Whether to keep operating at a loss is a dynamic problem. With a strategic state{' '}
           <Katex math="s" /> (customers, data, reputation, the odds of a future frontier model) and
           value function <Katex math="V_j" />, operating at <Katex math="x > 0" /> beats shutting down
           when
@@ -416,7 +424,7 @@ export const sections: Section[] = [
         <p>
           If today's incremental profit is negative, operating only makes sense when the discounted
           gain in continuation value more than covers it. And the paper stresses these future
-          benefits should not just be assumed: if serving inference does little for future model
+          benefits shouldn't be assumed: if serving inference does little for future model
           quality, spending the same resources on research may simply be better. The subscription
           route to survival is worked out in S6.
         </p>
@@ -430,16 +438,17 @@ export const sections: Section[] = [
           This falls like <Katex math="1/n^2" />, not <Katex math="1/n" />, because each entrant both
           splits the labs' profit pool and shrinks it, since competition pushes fixed-capacity rent
           upstream to the hyperscalers. Discount at the interest rate plus any displacement{' '}
-          <Term term="hazard">hazard</Term>, <Katex math="r + \Lambda" />. Free entry then pins down
-          the count of labs the market supports:
+          <Term term="hazard">hazard</Term>, <Katex math="\rho + \Lambda" /> (written{' '}
+          <Katex math="\rho" /> here rather than the compute price <Katex math="r" /> it would
+          otherwise collide with). Free entry then pins down the count of labs the market supports:
         </p>
-        <Katex display math="n^* = \left\lfloor \frac{K}{a}\sqrt{\frac{B}{(r+\Lambda)\,\mathcal F}} \right\rfloor." />
+        <Katex display math="n^* = \left\lfloor \frac{K}{a}\sqrt{\frac{B}{(\rho+\Lambda)\,\mathcal F}} \right\rfloor." />
         <p>
           <strong>Proposition 4 (free entry).</strong> There's a natural monopoly window where one
           lab clears the bar and a second wouldn't. Since <Katex math="\pi(1)/\pi(2) = 4" />, it's a
           fourfold band of fixed costs:
         </p>
-        <Katex display math="\frac{B K^2}{4 a^2} < (r+\Lambda)\,\mathcal F \le \frac{B K^2}{a^2}." />
+        <Katex display math="\frac{B K^2}{4 a^2} < (\rho+\Lambda)\,\mathcal F \le \frac{B K^2}{a^2}." />
         <p>
           One twist runs against textbook intuition. In the usual free-entry story a bigger market
           supports more firms. Here that holds only while capacity is slack. While GPUs bind, total
@@ -450,25 +459,39 @@ export const sections: Section[] = [
         </p>
         <p>
           <strong>Proposition 5 (segmented entry).</strong> Split the market into{' '}
-          <Katex math="S" /> protected segments, each with one lab as sole provider (the
-          segment-level dominance of S2). Each lab's flow profit becomes
+          <Katex math="S" /> segments, each with one lab as sole intended provider. These labs are at
+          exact quality parity — quality can't be what protects a niche here, since S2's condition
+          needs a rival's value at zero to sit at or below the market rate, and equal-quality rivals
+          would clear that bar easily. What protects the niche instead is a purchaser friction{' '}
+          <Katex math="s" /> — a switching, integration, or evaluation cost — for patronizing anyone
+          but the assigned lab. Working the friction backward from S2's own protection condition gives
+          a minimum size it has to clear:
+        </p>
+        <Katex display math="s \ge s_{\min} \equiv \frac{BK}{a} - r^*." />
+        <p>
+          Below that threshold a same-quality rival can still profitably invade; at or above it, each
+          lab's flow profit becomes
         </p>
         <Katex display math="\pi^{\text{seg}}(S) = \frac{B K^2}{a^2 S}," />
         <p>
           which is <Katex math="S" /> times the head-on figure, because a segment leader prices
-          against its own residual demand rather than as one of <Katex math="n" /> Cournot rivals.
-          Free entry then supports up to
+          against its own residual demand rather than as one of <Katex math="n" /> Cournot rivals —
+          this part of the math doesn't care why rivals stay out, only that they do. Free entry then
+          supports up to
         </p>
-        <Katex display math="\bar S = \left\lfloor \frac{B K^2}{a^2 (r+\Lambda)\,\mathcal F} \right\rfloor" />
+        <Katex display math="\bar S = \left\lfloor \frac{B K^2}{a^2 (\rho+\Lambda)\,\mathcal F} \right\rfloor" />
         <p>
           labs, the square of the head-on count <Katex math="n^*" />. The purchaser-facing price{' '}
           <Katex math="A - BK/a" /> is unchanged, so segmentation only moves rent from hyperscalers
           to labs. The exact square is special to the symmetric linear case, but the direction is
           general: defensible niches raise how many labs a given profit pool can carry past the
-          fixed-cost bar. What the model does not deliver is an actual number of labs. The fixed cost{' '}
-          <Katex math="\mathcal F" /> here counts compute alone, leaving out talent, data, and failed
-          runs. It also leaves open the entry-quality escalation and any cross-segment economies of
-          scope.
+          fixed-cost bar — provided the friction actually clears <Katex math="s_{\min}" /> and
+          capacity actually binds under the segmented configuration, which takes strictly less
+          capacity than binding under head-on competition among the same labs would. What the model
+          does not deliver is an actual number of labs, nor an estimate of whether real switching
+          costs clear <Katex math="s_{\min}" />. The fixed cost <Katex math="\mathcal F" /> here counts
+          compute alone, leaving out talent, data, and failed runs. It also leaves open the
+          entry-quality escalation and any cross-segment economies of scope.
         </p>
       </>
     ),
@@ -481,12 +504,12 @@ export const sections: Section[] = [
     body: (
       <>
         <p>
-          Leadership in this market doesn't come with a deed - it's more like a lease, and a successful
+          Leadership in this market doesn't come with a deed — it's more like a lease. A successful
           release lifts a laboratory's value schedule and can hand it a discrete jump in compute and
           market share, at least until a rival ships a strong enough substitute. So how much is a
-          lead actually worth? One compact formula:
+          lead worth? One compact formula:
         </p>
-        <Katex display math="V_L^{\text{lead}} \simeq \frac{\Delta\pi_L}{r + \Lambda_L}." />
+        <Katex display math="V_L^{\text{lead}} \simeq \frac{\Delta\pi_L}{\rho + \Lambda_L}." />
         <p>
           Read it plainly: profit-while-ahead, divided by the interest rate plus{' '}
           <Katex math="\Lambda" />, the odds per year that a rival catches up. Catch-up risk works
@@ -500,7 +523,7 @@ export const sections: Section[] = [
           separate dials. Treating them as if they were is the biggest mistake to make with this
           formula: a fatter prize attracts more challenger spending, more challenger spending raises
           the catch-up odds, and higher catch-up odds shrink what the prize is worth. So the formula
-          is really a snapshot of where that feedback settles, not two dials you can turn
+          is a snapshot of where that feedback settles, not two dials you can turn
           independently.
         </p>
       </>
@@ -514,7 +537,7 @@ export const sections: Section[] = [
         <p>
           Over a short interval the leader collects <Katex math="\Delta\pi_L\,dt" /> and keeps the
           lead with probability <Katex math="1 - \Lambda_L\,dt" />, so{' '}
-          <Katex math="V = \Delta\pi\,dt + (1 - r\,dt)(1 - \Lambda\,dt)V" />. Drop the second-order
+          <Katex math="V = \Delta\pi\,dt + (1 - \rho\,dt)(1 - \Lambda\,dt)V" />. Drop the second-order
           term and you get the boxed perpetuity. Three assumptions hide inside it: the flow premium{' '}
           <Katex math="\Delta\pi_L" /> is constant, the hazard <Katex math="\Lambda_L" /> is constant
           (displacement is a Poisson event), and losing the lead is for good. That last one is the
@@ -540,7 +563,7 @@ export const sections: Section[] = [
     body: (
       <>
         <p>
-          Why do people pay for several AI providers at once? Start with what a subscription actually
+          Why do people pay for several AI providers at once? Start with what a subscription
           is: a flat fee to get in, then cheap per use. It's the same deal a gym or a warehouse club
           offers. And if usage is cheap enough, there's no reason to be loyal. You keep a few
           subscriptions and route each task to whichever provider happens to be best at it.
@@ -625,7 +648,7 @@ export const sections: Section[] = [
         </p>
         <p>
           The central warning here is about when models become commodities: interchangeable, priced
-          at cost. Equal quality alone does <em>not</em> get you there. You need all three of:
+          at cost. Equal quality alone does <em>not</em> get you there. You need all three together:
           converging quality, enough competing model sellers, and enough hardware. Only when{' '}
           <Katex math="q_L - q_F \to 0" />, <Katex math="\mu_\ell \to 0" />, and{' '}
           <Katex math="r - c \to 0" /> hold together do{' '}
@@ -654,8 +677,8 @@ export const sections: Section[] = [
           <Katex math="\eta_L/\eta_F > 1" />.
         </p>
         <p>
-          One caution about the markup-compression arrows: quality convergence raising own-price
-          elasticity and shrinking the markup. They aren't free-floating. In a general demand system
+          One caution about the markup-compression arrows: quality convergence raises own-price
+          elasticity, which shrinks the markup. They aren't free-floating. In a general demand system
           they don't have to hold, because prices adjust too. The paper proves them for its two-model
           demand system, the proposition on breakthroughs and catch-up, and the demo inherits exactly
           that specification. So the arrows here are scoped to it, rather than claimed in general.

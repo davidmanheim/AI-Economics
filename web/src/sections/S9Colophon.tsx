@@ -146,6 +146,22 @@ export function S9Colophon() {
             to run it yourself.
           </p>
         </div>
+        <div className="colophon-card">
+          <span className="kicker">Extend</span>
+          <a
+            className="resource"
+            href="https://github.com/davidmanheim/AI-Economics"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Source on GitHub ↗
+          </a>
+          <p>
+            The LaTeX, the notebook, and this entire site — every chart driven by the same pure
+            TypeScript model, tested against the notebook's own output. Clone it and hand it to
+            whichever LLM you like: extend the model, add a section, or push back on an assumption.
+          </p>
+        </div>
       </div>
 
       {/* fixtures.json — the numerical test oracle. */}

@@ -51,9 +51,11 @@ const COEXISTENCE_MECHANISMS: { label: string; simulated: boolean; proven?: bool
 
 /**
  * Segment-level version of the winner-take-all test (Proposition 1 /
- * subsec:task-segmentation): within one task, compare the top two v_{ell,k}(0)
- * intercepts against the common clearing value r*. The task has a sole
- * provider exactly when the runner-up's intercept doesn't clear r*.
+ * subsec:task-segmentation, part 2): within one task, the task has a sole
+ * provider iff the leader itself clears r* AND the runner-up doesn't. Both
+ * clauses matter — the paper's own C2 fix caught that the runner-up clause
+ * alone is satisfied by a task nobody serves at all (leader included), so
+ * this checks both rather than just the older, incomplete one-sided test.
  */
 interface SegmentResult {
   label: string
@@ -78,7 +80,7 @@ function segmentResult(
   return {
     label,
     leaderName: top.name,
-    soleProvider: runnerUp.v0 <= rStar,
+    soleProvider: top.v0 > rStar && runnerUp.v0 <= rStar,
     leaderV0: top.v0,
     runnerUpV0: runnerUp.v0,
   }
@@ -88,7 +90,9 @@ function segmentResult(
  * Draw each firm's per-task quality as a lognormal multiplier of its own
  * aggregate q — no lab chooses which task it's strongest at. The multiplier
  * has mean 1 (mean-preserving spread, matching the paper's normalization
- * sum_k w_k beta_{ell,k} = 0 on the bridging paragraph in Section 6), so a
+ * sum_k w_k chi_{ell,k} = 0 on the bridging paragraph in Section 6 — renamed
+ * from beta to chi there to resolve a notation collision with the paper's
+ * scaling-law curvature exponent), so a
  * firm's task-average capability stays anchored to its own overall quality
  * level and only the task-to-task dispersion is under the reader's control.
  */
@@ -356,7 +360,11 @@ export function S2WinnerTakeMost() {
                     <td style={{ padding: '6px 10px', fontWeight: 700 }}>{firmDisplayName(t.leaderName)}</td>
                     <td style={{ padding: '6px 10px' }}>{numFmt(t.leaderV0)} vs {numFmt(t.runnerUpV0)}</td>
                     <td style={{ padding: '6px 10px', color: t.soleProvider ? 'var(--accent)' : 'var(--muted)', fontWeight: t.soleProvider ? 700 : 400 }}>
-                      {t.soleProvider ? 'wins alone' : "leads, doesn't clear"}
+                      {t.soleProvider
+                        ? 'wins alone'
+                        : t.leaderV0 > rStar
+                          ? "leads, doesn't clear"
+                          : 'nobody clears r*'}
                     </td>
                   </tr>
                 ))}

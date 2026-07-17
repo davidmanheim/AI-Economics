@@ -1,7 +1,9 @@
 // S5 — "What happens after a new model release" (plan §4.5). Hosts M3:
 //   - the seeded release-race timeline (RaceTimeline), driven by three sim
 //     controls plus a re-run / same-seed pair, and
-//   - a leadership-value calculator: r and Lambda are dials, but Δπ is DERIVED
+//   - a leadership-value calculator: r (interest rate, called rho in the paper's
+//     notation table to avoid colliding with the wholesale compute price r*)
+//     and Lambda are dials, but Δπ is DERIVED
 //     from the simulated market state (leader's laboratory rent minus what it
 //     would keep if the closest follower matched its quality) — never a free
 //     dial, per the honesty guardrail.
@@ -144,7 +146,7 @@ function LeadershipCalculator({ deltaPi, leaderName }: CalculatorProps) {
       <h3 style={{ margin: '0 0 4px' }}>What a lead is worth</h3>
       <p style={{ margin: '0 0 18px', color: 'var(--muted)', fontSize: '.95rem' }}>
         The <Term term="valueFormula">value formula</Term>{' '}
-        <Katex math="V_L^{\text{lead}} = \Delta\pi / (r + \Lambda)" /> turns a flow
+        <Katex math="V_L^{\text{lead}} = \Delta\pi / (\rho + \Lambda)" /> turns a flow
         premium and a catch-up <Term term="hazard">hazard</Term> into a stock of
         value.
       </p>
@@ -171,7 +173,7 @@ function LeadershipCalculator({ deltaPi, leaderName }: CalculatorProps) {
         </div>
 
         <Slider
-          label="r — interest rate"
+          label="ρ — interest rate"
           def={sliderDefs.interestRate}
           value={r}
           min={0.02}
