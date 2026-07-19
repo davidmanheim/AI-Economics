@@ -23,3 +23,19 @@ Options -Indexes
 <IfModule mod_mime.c>
   AddType application/octet-stream .ipynb
 </IfModule>
+
+# Caching policy. The host runs a dynamic (NGINX) page cache in front of
+# Apache; without this, it will store index.html and keep serving it after a
+# deploy — but index.html references content-hashed asset filenames that change
+# every build, so a cached shell points at bundles that no longer exist (blank
+# page), and social scrapers read stale Open Graph tags. Send no-cache on the
+# HTML shell so it is always revalidated against the current build, and cache
+# the immutable, content-hashed assets hard and long.
+<IfModule mod_headers.c>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+  <FilesMatch "\.(js|css|woff2?|ttf)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>
