@@ -17,7 +17,7 @@ import { useChartDims } from './useChartDims'
 import { VarLabel } from './VarLabel'
 import { varDefs } from './varDefs'
 
-export type RegimeKey = 'common' | 'firm-specific' | 'continuing'
+export type RegimeKey = 'common' | 'firm-specific' | 'continuing' | 'continuing-additive'
 
 /** One time step, already reduced to what the charts draw. */
 export interface RegimePricePoint {

@@ -188,12 +188,17 @@ const REGIME_SUMMARY: Record<RegimeKey, { label: string; summary: RegimePanel['s
     leadership: 'durable',
   },
   continuing: {
-    label: 'Continuing improvement',
+    label: 'Continuing (multiplicative)',
     summary: { edge: 'recurring', markup: 'cycles', rent: 'cycles' },
     leadership: 'temporary',
   },
+  'continuing-additive': {
+    label: 'Continuing (additive)',
+    summary: { edge: 'fades in share', markup: 'freezes in level', rent: 'share erodes' },
+    leadership: 'temporary',
+  },
 }
-const REGIME_ORDER: RegimeKey[] = ['common', 'firm-specific', 'continuing']
+const REGIME_ORDER: RegimeKey[] = ['common', 'firm-specific', 'continuing', 'continuing-additive']
 
 function toRegimePoints(config: RegimeConfig, c: number, aB: number[], bB: number[]): RegimePricePoint[] {
   const { periods } = simulateRegime(config)
@@ -229,6 +234,7 @@ function buildRegimePanels(
     base,
     qBar: REGIME_STATIC.qBar,
     eta: [knobs.etaGap, 1.0],
+    alpha: [knobs.etaGap - 1, 0], // additive-regime increment (see S6Regimes)
     d: REGIME_STATIC.d,
     psi: REGIME_STATIC.psi,
     beta: knobs.curvature,

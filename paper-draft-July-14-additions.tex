@@ -34,7 +34,7 @@ The model presented in this paper is straightforward, and novel only inasmuch as
 
 The central assumption is that LLM providers will increase prices to allow them to match demand, and thus scarce compute flows toward uses with the highest willingness to pay, which will effectively mean most LLM usage is for applications with the highest benefit to users per constrained FLOP. A laboratory's capability advantage matters only insofar as it raises this marginal net revenue.
 
-There is also heterogeneity between lab capabilities; the persistent laboratory advantage is represented as a multiplicative productivity advantage rather than a fixed additive increment, which would vanish relative to an exponentially advancing frontier, and we account for heterogeneity across laboratory capabilities. The model shows that winner-take-all requires a demanding condition, which is that the leader's worst funded use of compute must be more valuable than every follower's best use. The paper then identifies several mechanisms that cause this condition to fail, producing coexistence instead. We distinguish the integrated-industry allocation benchmark from a plausible oligopolistic downstream market in which purchaser-facing prices contain three components: physical production cost, hyperscaler scarcity rent, and a model-provider markup. Finally, we extend the model to lumpy model development, temporary leadership, endogenous GPU investment, and alternative long-run technological regimes. Under a common asymptote, model-specific rents tend to disappear, though oligopoly markups need not; firm-specific asymptotes preserve durable differentiation; and continuing improvement produces repeated episodes of temporary leadership in which laboratory rents rise after breakthroughs and hyperscaler bargaining power rises as competitors catch up.
+There is also heterogeneity between lab capabilities; the persistent laboratory advantage is represented as a multiplicative productivity advantage rather than a fixed additive increment, which would vanish relative to an exponentially advancing frontier, and we account for heterogeneity across laboratory capabilities. The model shows that winner-take-all requires a demanding condition, which is that the leader's worst funded use of compute must be more valuable than every follower's best use. The paper then identifies several mechanisms that cause this condition to fail, producing coexistence instead. We distinguish the integrated-industry allocation benchmark from a plausible oligopolistic downstream market in which purchaser-facing prices contain three components: physical production cost, hyperscaler scarcity rent, and a model-provider markup. Finally, we extend the model to lumpy model development, temporary leadership, endogenous GPU investment, and alternative long-run technological regimes. Under a common asymptote, model-specific rents tend to disappear, though oligopoly markups need not; firm-specific asymptotes preserve durable differentiation; continuing improvement with a multiplicative advantage produces repeated episodes of temporary leadership in which laboratory rents rise after breakthroughs and hyperscaler bargaining power rises as competitors catch up; and continuing improvement with only an additive advantage combines unbounded quality growth with converging relative positions, so laboratory rents erode as a share of a growing market even though quality never stops improving.
 \end{abstract}
 
 \section{Introduction}
@@ -134,6 +134,7 @@ $b_m$ & Other variable cost per standardized output of model $m$ \\
 $\lambda$ & Shadow price of the capacity constraint \\
 $v_m$ & Marginal net revenue per FLOP for model $m$ (competitive benchmark) \\
 $\eta_\ell$ & Persistent laboratory-specific productivity-level multiplier \\
+$\alpha_\ell$ & Laboratory advantage increment: log-productivity term with $\eta_\ell=e^{\alpha_\ell}$ in the multiplicative specification; additive level increment in the additive specification (Secs.~\ref{sec:persistent-advantage}, \ref{subsec:additive-frontier}) \\
 $r^*$ & Market-clearing wholesale value of a FLOP \\
 $\mu_\ell$ & Downstream oligopoly markup of laboratory $\ell$ \\
 $\widehat v_\ell$ & Laboratory $\ell$'s private marginal value per FLOP under oligopoly \\
@@ -298,7 +299,7 @@ Under the additive specification,
 
 \begin{equation}\lim_{A_t\rightarrow\infty}\frac{A_t+\alpha_L}{A_t+\alpha_j}=1.\end{equation}
 
-A fixed laboratory increment becomes asymptotically negligible relative to the common frontier. The multiplicative specification instead represents a persistent structural efficiency advantage in algorithms, training, post-training, data, research organization, or the ability to produce economically relevant performance with fewer inference resources.
+A fixed laboratory increment becomes asymptotically negligible relative to the common frontier. This limit is set aside here because it cannot represent \emph{persistent} advantage, but it is not discarded: Section~\ref{subsec:additive-frontier} returns to it as a long-run technological regime in its own right---unbounded improvement with converging relative positions. The multiplicative specification instead represents a persistent structural efficiency advantage in algorithms, training, post-training, data, research organization, or the ability to produce economically relevant performance with fewer inference resources.
 
 Higher productivity per FLOP generally shifts the model's marginal-value schedule upward. We assume
 
@@ -668,7 +669,25 @@ Writing the training-compute condition against the full opportunity cost $c+\lam
 \section{Technological Regimes, Consumer Prices, and Rent Shares}
 \label{sec:technology-regimes}
 
-Let $G_{\ell t}$ denote cumulative effective training investment by laboratory $\ell$, and let productivity per inference FLOP be $q_{\ell t}=f_\ell(G_{\ell t})$. A notational note before proceeding: this $G_{\ell t}$ (cumulative training compute, indexed by time) is unrelated to the gross operating value function $G_\ell(x_\ell)$ of Section~\ref{sec:concentration} (a function of a compute allocation, not a stock); the collision runs through the rest of this section and Section~\ref{sec:natural-oligopoly}, where $\Gamma_\ell$ is introduced specifically to avoid compounding it further (Section~\ref{subsec:entry-cost}). Context disambiguates the two uses of $G$ throughout---the operating-value function always takes a compute allocation as its argument, the training-investment stock never does---but both are flagged here in one place. The long-run market dynamics depend on whether productivity converges to a common ceiling, converges to firm-specific ceilings, or continues to improve.
+Let $G_{\ell t}$ denote cumulative effective training investment by laboratory $\ell$, and let productivity per inference FLOP be $q_{\ell t}=f_\ell(G_{\ell t})$. A notational note before proceeding: this $G_{\ell t}$ (cumulative training compute, indexed by time) is unrelated to the gross operating value function $G_\ell(x_\ell)$ of Section~\ref{sec:concentration} (a function of a compute allocation, not a stock); the collision runs through the rest of this section and Section~\ref{sec:natural-oligopoly}, where $\Gamma_\ell$ is introduced specifically to avoid compounding it further (Section~\ref{subsec:entry-cost}). Context disambiguates the two uses of $G$ throughout---the operating-value function always takes a compute allocation as its argument, the training-investment stock never does---but both are flagged here in one place.
+
+The long-run market dynamics depend on the asymptotic behavior of the training-to-quality map $q_\ell(G)$, and the cases are organized by two questions that are easy to conflate. The first is about \emph{levels}: does $q_\ell(G)$ approach a ceiling as cumulative training investment grows, or improve without bound? The second is about \emph{relative position}: does the gap $q_L(G)/q_F(G)$ converge to one, or stay bounded above it? The two questions are independent, and it is the second, not the first, that governs whether differential productivity rents survive, because the machinery of Sections~\ref{sec:persistent-advantage}--\ref{sec:oligopoly} prices a laboratory's advantage through its quality relative to rivals'. (More precisely, convergence of relative position guarantees that differential rents vanish \emph{as a share} of the value the market generates; whether they also vanish in level turns on the absolute gap, and Section~\ref{subsec:additive-frontier} works out the one cell of the table in which the two versions of the statement come apart.) Crossing the two questions gives four asymptotic regimes, shown in Table~\ref{tab:regime-grid} and taken up in turn below.
+
+\begin{table}[htbp]
+\centering
+\caption{The four technological regimes, organized by whether quality levels stay bounded and whether the relative gap closes.}
+\label{tab:regime-grid}
+\begin{tabular}{lll}
+\hline
+ & Gap $q_L/q_F\rightarrow1$ & Gap persists \\
+\hline
+Levels bounded & Common asymptote (Sec.~\ref{subsec:common-asymptote}) & Firm-specific asymptotes (Sec.~\ref{subsec:firm-specific-asymptotes}) \\
+Levels unbounded & Additive advantage (Sec.~\ref{subsec:additive-frontier}) & Multiplicative advantage (Sec.~\ref{subsec:continuing-improvement}) \\
+\hline
+\end{tabular}
+\end{table}
+
+One clarification about the first question before proceeding: $q$ is economically relevant quality per FLOP---denominated in purchaser value, not in benchmark scores---so demand-side saturation is not a separate technological future: an ``improvement'' that no longer raises what purchasers value is not an increase in $q$ at all, and saturating demand for marginal quality therefore simply \emph{is} a ceiling in $q$, landing in the bounded row of Table~\ref{tab:regime-grid} in the common- or firm-specific-asymptote case according to whether laboratories reach the point of purchaser indifference together or at different levels.
 
 Under oligopoly, the purchaser-facing price is
 
@@ -677,6 +696,7 @@ Under oligopoly, the purchaser-facing price is
 The first two terms are compute-inclusive marginal cost; $\mu_{\ell t}$ is the downstream oligopoly markup. When upstream compute is allocated competitively, $r_t$ depends on the best alternative laboratory's private marginal value. When laboratories exercise oligopsony or bargain bilaterally, the division is modified as described in Appendix~\ref{app:bargaining}.
 
 \subsection{A common global asymptote}
+\label{subsec:common-asymptote}
 
 Suppose all laboratories approach the same maximum productivity $\bar q$:
 
@@ -705,6 +725,7 @@ Training investment eventually weakens because the marginal productivity return 
 Under these conditions, quality-adjusted consumer prices approach physical inference cost; this commoditization endpoint is the slack-capacity regime of Appendix~\ref{app:slack-capacity} combined with vanishing differentiation. If downstream oligopoly persists while compute becomes abundant, hyperscaler rents disappear but laboratories retain markups. If compute remains scarce, hyperscalers may capture a large share of a shrinking model-specific surplus even as absolute scarcity rents remain positive.
 
 \subsection{Firm-specific asymptotes}
+\label{subsec:firm-specific-asymptotes}
 
 Suppose instead that laboratories approach different structural productivity limits:
 
@@ -726,7 +747,7 @@ Consumer prices retain a durable frontier premium. Even if compute becomes abund
 
 If compute remains scarce, purchaser prices contain both the hyperscaler scarcity component and the downstream model-provider markup. The leading laboratory retains a larger share of producer surplus than under the common-asymptote regime because both differential productivity and downstream differentiation remain positive.
 
-\subsection{Continuing productivity improvement}
+\subsection{Continuing improvement with multiplicative advantage}
 \label{subsec:continuing-improvement}
 
 Suppose there is no nearby global ceiling. A simple specification is
@@ -736,6 +757,8 @@ Suppose there is no nearby global ceiling. A simple specification is
 or, as a function of cumulative effective training compute,
 
 \begin{equation}q_\ell(G)=\eta_\ell\cdot G^\beta.\end{equation}
+
+The multiplicative form is itself a choice among the unbounded cases, not forced by unboundedness: it makes the leader's proportional advantage $\eta_L/\eta_F$ independent of the frontier level, so the gap that drives the release-cycle dynamics below never trends away. The additive alternative, in which the frontier still diverges but relative positions converge, is the fourth regime and is taken up in Section~\ref{subsec:additive-frontier}.
 
 A major release increases the leader's product quality and reduces substitutability. Two distinct downstream consequences follow, and they are established in two distinct models of price and quantity competition, because the paper's maintained binding-capacity regime and the regime in which unconstrained price competition is well posed are not the same setting (Section~\ref{sec:limitations} returns to this scope restriction). Immediately after a breakthrough, in the slack-capacity regime where compute is obtainable at the going compute-inclusive cost,
 
@@ -764,15 +787,43 @@ Consequently a breakthrough that widens the gap lowers $\epsilon_{LL}$ and raise
 
 Laboratories therefore tend to capture a larger share of producer surplus immediately after breakthroughs, while hyperscalers tend to capture a larger share as competitors catch up. Absolute hyperscaler profits may rise in both phases if model improvements expand demand for inference and training compute. The proposition concerns the division of producer surplus, not necessarily the level of profit.
 
+\subsection{Continuing improvement with additive advantage}
+\label{subsec:additive-frontier}
+
+The remaining cell of Table~\ref{tab:regime-grid} is unbounded improvement with a converging relative position, and the paper already contains the specification that produces it: the additive alternative that Section~\ref{sec:persistent-advantage} introduced and deliberately set aside---set aside precisely because a fixed additive increment cannot represent \emph{persistent} advantage against an advancing frontier. That earlier observation was not a dead end; it is the definition of this regime. Suppose
+
+\begin{equation}q_\ell(G)=\bar q(G)+\alpha_\ell,\qquad \bar q(G)=G^{\beta}\rightarrow\infty,\end{equation}
+
+or in time-series form $q_{\ell t}=\bar q_t+\alpha_\ell$ with $\bar q_t\rightarrow\infty$, where $\alpha_\ell$ is the additive laboratory increment of Section~\ref{sec:persistent-advantage}'s additive specification. Levels diverge, the absolute gap is frozen at $q_L-q_F=\alpha_L-\alpha_F$, and the relative gap closes:
+
+\begin{equation}\lim_{G\rightarrow\infty}q_\ell(G)=\infty,\qquad \lim_{G\rightarrow\infty}\frac{q_L(G)}{q_F(G)}=1.\end{equation}
+
+The second limit is exactly the one computed in Section~\ref{sec:persistent-advantage}, $\lim_{A_t\rightarrow\infty}(A_t+\alpha_L)/(A_t+\alpha_F)=1$; this regime is where that calculation pays off. There, the vanishing ratio was the reason to reject the additive form as a representation of persistent advantage. Here it is not a modeling defect but a candidate description of the world: a frontier that keeps advancing while every laboratory's head start becomes proportionally negligible.
+
+There is no commoditization by ceiling in this regime. The marginal product of training compute behaves exactly as in the multiplicative case---returns taper at the rate set by $\beta$, not toward zero at an asymptote---so training investment is not extinguished by exhausted technology, quality keeps rising without bound, and quality-adjusted consumer prices can keep falling indefinitely through the productivity channel rather than converging to the positive floor that physical inference cost and a finite ceiling $\bar q$ jointly imply in the bounded regimes. What erodes is instead the leader's position relative to the frontier: commoditization by convergence, without commoditization by ceiling.
+
+The two-model demand system makes the erosion precise, and also shows that it is subtler than the common-asymptote case. The rent-bearing objects of Proposition~\ref{prop:breakthrough} depend on the \emph{absolute} quality gap $\Delta=Q_L-Q_F$, and this regime pins that gap: with $a_L=a_F=1$, $\Delta=\alpha_L-\alpha_F$ at every frontier level. Substituting a diverging $Q_L$ at fixed $\Delta$ into the proposition's expressions gives the regime's signature, derived within the linear example. The Bertrand markup of part~1 tends to a positive constant, $\mu_L=\Delta(2Q_L-\kappa)/(3Q_L+\Delta)\rightarrow\tfrac{2}{3}\Delta$, so the leader's price stays bounded while $Q_L\rightarrow\infty$ and the quality-adjusted price $P_L/Q_L\rightarrow0$. The differential rent therefore does not vanish in \emph{level}: it converges to an absolute margin pinned by the additive increment alone, independent of how far the frontier has advanced. It vanishes in \emph{share}: relative to purchaser value, consumer surplus, and the revenue the market generates---all of which grow with the frontier---the frozen margin becomes negligible. This is the one cell of Table~\ref{tab:regime-grid} in which the share and level versions of ``differential rents vanish'' come apart, which is why the section's framing insists that convergence of relative position governs rent \emph{shares}: under the common asymptote the absolute gap closes too, so rents vanish in level and in share at once, whereas here only the share vanishes. By the same substitution, the equilibrium elasticity $\epsilon_{LL}=P_L/\mu_L$ tends to the constant $1+3\kappa/(2\Delta)$ rather than diverging, so ratio convergence alone does not deliver the homogeneous-goods limit; that requires the absolute gap to close as well.
+
+The capacity-allocation side is starker. At the winner-take-all corner of Proposition~\ref{prop:breakthrough}(2), the differential compute rent is $\widehat v_L-\widehat v_F=-K\,Q_L+\Delta\,(1-K)$; at fixed $\Delta$ this turns negative once $Q_L>\Delta\,(1-K)/K$, so continued frontier growth eventually breaks the winner-take-all condition of Section~\ref{sec:concentration} by itself---the leader's marginal FLOP, serving ever-lower-value purchasers with ever-higher quality, comes to be worth less than the follower's first FLOP serving the top of the market at a quality only $\Delta$ lower. Under multiplicative advantage the same expression is scale-invariant: there $\Delta=(1-\eta_F/\eta_L)\cdot Q_L$, so $\widehat v_L-\widehat v_F=Q_L\cdot\left[(1-\eta_F/\eta_L)(1-K)-K\right]$ keeps a fixed sign at every frontier level. Whether concentration is sustainable is thus level-independent under multiplicative advantage and self-extinguishing under additive advantage. Both statements are corner evaluations in the linear example, offered as illustrations of the mechanism rather than general theorems.
+
+Two carry-overs from the other regimes complete the picture. As under the common asymptote, convergence removes the vertical-differentiation source of market power but not the structural ones: a finite oligopoly, collusion, switching costs, or ecosystem lock-in \citep{klemperer1995} can sustain model-provider markups even after the differentiation-based component has shrunk to the frozen $\Delta$-margin, so this regime no more guarantees competitive pricing than the common asymptote does. And as under multiplicative continuing improvement, temporary model-specific shocks and lumpy releases still open transient gaps along the path, so the breakthrough-and-catch-up dynamics of Proposition~\ref{prop:breakthrough} apply unchanged period by period; what the regime removes is the trend---leadership episodes recur, but no laboratory's proportional position survives them.
+
+Which of the two unbounded regimes describes reality is exactly the additive-versus-multiplicative question that Section~\ref{sec:persistent-advantage} posed when choosing how to represent persistent advantage, now revealed as a question about long-run market structure rather than about notation: a multiplicative advantage makes continuing improvement a sequence of durable proportional leads, while an additive advantage makes it a convergence machine. The observable difference is whether the leader's proportional lead is stable or shrinking as the frontier advances. The paper takes no stand on which obtains: the multiplicative form was adopted in Section~\ref{sec:persistent-advantage} because it is the only one of the two that can represent persistent advantage at all, not as a claim that the additive world is less likely.
+
 \subsection{Comparison of the regimes}
+\label{subsec:regime-comparison}
 
-The key distinction is not simply whether performance eventually stops improving. It is whether the leader--follower gap and downstream market power disappear.
+The key distinction is not simply whether performance eventually stops improving. It is whether the leader--follower gap and downstream market power disappear---the second axis of Table~\ref{tab:regime-grid}, which cuts across the first.
 
-Under a common asymptote, differential productivity rents vanish, but oligopoly markups can persist if competition remains weak. Hyperscaler rents vanish only if capacity becomes abundant or upstream competition drives the compute price to physical cost.
+Under a common asymptote, differential productivity rents vanish---in level and in share, since the absolute and relative gaps close together---but oligopoly markups can persist if competition remains weak. Hyperscaler rents vanish only if capacity becomes abundant or upstream competition drives the compute price to physical cost.
 
 Under firm-specific asymptotes, the leader retains both a durable productivity advantage and potentially a durable downstream markup. Hyperscalers capture the scarcity value common to viable laboratories, but the leader retains a positive differential rent.
 
-Under continuing improvement, market shares and rent shares fluctuate around model releases. The leader captures a larger portion of surplus after a breakthrough; competitors and hyperscalers gain bargaining power during catch-up. Consumer prices can rise, remain sticky, or fall in nominal terms depending on laboratory strategy, but quality-adjusted prices fall only when productivity and capacity growth outpace demand and oligopoly markups.
+Under continuing improvement with multiplicative advantage, market shares and rent shares fluctuate around model releases. The leader captures a larger portion of surplus after a breakthrough; competitors and hyperscalers gain bargaining power during catch-up. Consumer prices can rise, remain sticky, or fall in nominal terms depending on laboratory strategy, but quality-adjusted prices fall only when productivity and capacity growth outpace demand and oligopoly markups.
+
+Under continuing improvement with additive advantage, the release-cycle fluctuations are the same, but the trend belongs to the convergent column: differential rents freeze in level and vanish as a share of a market whose total value keeps growing, winner-take-all becomes unsustainable at high frontier levels, and quality-adjusted prices can fall indefinitely because there is no ceiling to arrive at. The regime shares its convergence logic with the common asymptote and its unbounded growth with the multiplicative case, and matches neither: rents do not vanish in level as under the ceiling, and they do not persist in share as under multiplicative advantage.
+
+The four regimes are asymptotic classifications, not forecasts of a single uninterrupted path: to the extent the world moves between them over time---a stretch of continuing improvement that later runs into a ceiling, say---each phase is analyzed by applying the regime that describes it, in sequence, and no fifth case is needed.
 
 \section{Fixed Training Costs and the Number of Laboratories}
 \label{sec:natural-oligopoly}
@@ -792,12 +843,13 @@ The model already contains the two ingredients needed to price entry, so we do n
 
 where the approximation treats the opportunity cost of compute as roughly constant over the training program.
 
-The three technological regimes of Section~\ref{sec:technology-regimes} give the inverse laws directly, and they say quite different things about entry:
+The four technological regimes of Section~\ref{sec:technology-regimes} give the inverse laws directly, and they say quite different things about entry:
 
 \begin{itemize}
 \item \textbf{Common asymptote.} $q_\ell(G)=\bar q-d_\ell\cdot(\psi_\ell\cdot G)^{-\beta}$ inverts to $\Gamma_\ell(q)=\psi_\ell^{-1}\cdot\left(d_\ell/(\bar q-q)\right)^{1/\beta}$, which diverges as $q\to\bar q$. Entry near the ceiling is arbitrarily expensive, so the entry cost rises fastest exactly where products are converging and markups are compressing: late entrants pay more to obtain less differentiation.
 \item \textbf{Firm-specific asymptotes.} $q_\ell(G)=\eta_\ell\cdot\bar q-d_\ell\cdot G^{-\beta}$ inverts to $\Gamma_\ell(q)=\left(d_\ell/(\eta_\ell\cdot\bar q-q)\right)^{1/\beta}$ for $q<\eta_\ell\cdot\bar q$, and no finite training budget reaches $q\geq\eta_\ell\cdot\bar q$. Which laboratories can enter at a commercially required quality is then determined by ceilings before budgets: a laboratory whose asymptote lies below that quality is excluded at any price.
-\item \textbf{Continuing improvement.} $q_\ell(G)=\eta_\ell\cdot G^{\beta}$ inverts to $\Gamma_\ell(q)=\left(q/\eta_\ell\right)^{1/\beta}$, finite for every target. The persistent multiplier $\eta_\ell$ of Section~\ref{sec:persistent-advantage} now appears as an entry-cost advantage, $\mathcal F_\ell(q)\propto\eta_\ell^{-1/\beta}$, so free entry selects laboratories in descending order of research efficiency; and when $\beta<1$, required compute is convex in target quality, so each further increment to the entry bar costs proportionally more.
+\item \textbf{Continuing improvement, multiplicative advantage.} $q_\ell(G)=\eta_\ell\cdot G^{\beta}$ inverts to $\Gamma_\ell(q)=\left(q/\eta_\ell\right)^{1/\beta}$, finite for every target. The persistent multiplier $\eta_\ell$ of Section~\ref{sec:persistent-advantage} now appears as an entry-cost advantage, $\mathcal F_\ell(q)\propto\eta_\ell^{-1/\beta}$, so free entry selects laboratories in descending order of research efficiency; and when $\beta<1$, required compute is convex in target quality, so each further increment to the entry bar costs proportionally more.
+\item \textbf{Continuing improvement, additive advantage.} $q_\ell(G)=G^{\beta}+\alpha_\ell$ inverts to $\Gamma_\ell(q)=\left(q-\alpha_\ell\right)^{1/\beta}$, finite for every target above $\alpha_\ell$. The additive increment appears as an entry-cost discount, but a proportionally vanishing one: $\Gamma_\ell(q)/\Gamma_j(q)=\left((q-\alpha_\ell)/(q-\alpha_j)\right)^{1/\beta}\rightarrow1$ as $q\rightarrow\infty$, so laboratory identity matters less for the cost of entry the higher the entry bar rises---the entry-cost mirror of the regime's converging relative quality, and the opposite of the multiplicative case, where the discount $\eta_\ell^{-1/\beta}$ is the same proportional factor at every target quality.
 \end{itemize}
 
 One honest caveat before using $\mathcal F_\ell$. Equation~\eqref{eq:entry-cost} prices the compute component of entry, because that is what the model contains. Real fixed costs also include research talent, data acquisition, failed and duplicated training runs, and organizational overhead, none of which the model represents, so $\mathcal F_\ell$ should be read as a lower bound, and the model makes no claim to quantify the true figure. The results below need only that the fixed cost is large, sunk, and paid before any revenue arrives.

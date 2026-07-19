@@ -3,6 +3,7 @@ import {
   qCommonAsymptote,
   qFirmAsymptote,
   qContinuing,
+  qContinuingAdditive,
   simulateRegime,
   type RegimeConfig,
 } from '../regimes'
@@ -32,6 +33,21 @@ describe('regime productivity laws (Section 11)', () => {
     expect(b).toBeGreaterThan(a)
     expect(qContinuing(1, 1.4, 0.4)).toBeCloseTo(1.4, 12) // eta * 1^beta
   })
+
+  it('continuing-additive is unbounded but ratio -> 1 (fourth regime)', () => {
+    // Diverges like G^beta, so still increasing in G...
+    const a = qContinuingAdditive(10, 0.3, 0.4)
+    const b = qContinuingAdditive(100, 0.3, 0.4)
+    expect(b).toBeGreaterThan(a)
+    expect(qContinuingAdditive(1, 0.3, 0.4)).toBeCloseTo(1.3, 12) // 1^beta + alpha
+    // ...but the leader/follower ratio converges to 1 as the frontier grows,
+    // while the absolute gap stays frozen at alpha_L - alpha_F.
+    const big = 1e15 // G^0.4 = 1e6, so the 0.3 gap is ~3e-7 of the level
+    const qL = qContinuingAdditive(big, 0.3, 0.4)
+    const qF = qContinuingAdditive(big, 0.0, 0.4)
+    expect(qL / qF).toBeCloseTo(1, 6)
+    expect(qL - qF).toBeCloseTo(0.3, 9)
+  })
 })
 
 function baseTwoFirm(): RegimeConfig['base'] {
@@ -51,6 +67,7 @@ describe('regime simulation maps through the static model', () => {
       base: baseTwoFirm(),
       qBar: 2,
       eta: [1.4, 1.1],
+      alpha: [0.3, 0],
       d: [1, 1],
       psi: [1, 1],
       beta: 0.4,
@@ -76,6 +93,7 @@ describe('regime simulation maps through the static model', () => {
       base: baseTwoFirm(),
       qBar: 2,
       eta: [1, 1],
+      alpha: [0, 0],
       d: [1.0, 1.4],
       psi: [1, 1],
       beta: 0.5,
@@ -89,5 +107,30 @@ describe('regime simulation maps through the static model', () => {
     const first = res.periods[2].qualityGap
     const last = res.periods[res.periods.length - 1].qualityGap
     expect(Math.abs(last - 1)).toBeLessThan(Math.abs(first - 1))
+  })
+
+  it('continuing-additive: quality gap converges toward 1 while quality keeps rising', () => {
+    const cfg: RegimeConfig = {
+      regime: 'continuing-additive',
+      base: baseTwoFirm(),
+      qBar: 2,
+      eta: [1, 1],
+      alpha: [0.3, 0],
+      d: [1, 1],
+      psi: [1, 1],
+      beta: 0.4,
+      G0: 1,
+      gG: 0.4,
+      capacityGrowth: 0.1,
+      demandGrowth: 0.05,
+      periods: 40,
+    }
+    const res = simulateRegime(cfg)
+    const first = res.periods[2]
+    const last = res.periods[res.periods.length - 1]
+    // Gap converges toward 1 (share erodes)...
+    expect(Math.abs(last.qualityGap - 1)).toBeLessThan(Math.abs(first.qualityGap - 1))
+    // ...but leader quality keeps rising (no ceiling).
+    expect(last.q[0]).toBeGreaterThan(first.q[0])
   })
 })

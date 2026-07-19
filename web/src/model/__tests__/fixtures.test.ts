@@ -14,7 +14,7 @@ import { allocate, wtaTest } from '../allocation'
 import { cournotEquilibrium } from '../cournot'
 import { nashBargain } from '../bargaining'
 import { vLead } from '../dynamics'
-import { qCommonAsymptote, qFirmAsymptote, qContinuing } from '../regimes'
+import { qCommonAsymptote, qFirmAsymptote, qContinuing, qContinuingAdditive } from '../regimes'
 import { bertrandDuopoly } from '../demand'
 import {
   netValue,
@@ -129,13 +129,15 @@ describe('fixtures.json oracle — dynamics.ts (vLead)', () => {
 })
 
 describe('fixtures.json oracle — regimes.ts', () => {
-  it('the three q(G) laws match at a spot value', () => {
+  it('the four q(G) laws match at a spot value', () => {
     for (const c of fixtures.regimes) {
       let got: number
       if (c.regime === 'common') {
         got = qCommonAsymptote(c.G, c.qBar!, c.d!, c.psi!, c.beta)
       } else if (c.regime === 'firm-specific') {
         got = qFirmAsymptote(c.G, c.qBar!, c.d!, c.eta!, c.beta)
+      } else if (c.regime === 'continuing-additive') {
+        got = qContinuingAdditive(c.G, c.alpha!, c.beta)
       } else {
         got = qContinuing(c.G, c.eta!, c.beta)
       }

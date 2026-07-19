@@ -48,13 +48,18 @@ const SUMMARY: Record<RegimeKey, { label: string; summary: RegimePanel['summary'
     leadership: 'durable',
   },
   continuing: {
-    label: 'Continuing improvement',
+    label: 'Continuing (multiplicative)',
     summary: { edge: 'recurring', markup: 'cycles', rent: 'cycles' },
+    leadership: 'temporary',
+  },
+  'continuing-additive': {
+    label: 'Continuing (additive)',
+    summary: { edge: 'fades in share', markup: 'freezes in level', rent: 'share erodes' },
     leadership: 'temporary',
   },
 }
 
-const REGIME_ORDER: RegimeKey[] = ['common', 'firm-specific', 'continuing']
+const REGIME_ORDER: RegimeKey[] = ['common', 'firm-specific', 'continuing', 'continuing-additive']
 
 const S6_CSS = `
 .commodity-callout { margin: 26px 0; padding: 18px 22px; border: 1px solid #a9d7d0;
@@ -139,6 +144,10 @@ export function S6Regimes() {
       base,
       qBar,
       eta: [etaGap, 1.0],
+      // Additive increment for the fourth regime: the leader starts etaGap-1
+      // above the follower in quality, a gap that freezes in level while the
+      // diverging frontier G^beta makes it vanish as a share (ratio -> 1).
+      alpha: [etaGap - 1, 0],
       d: [dGap, dGap],
       psi: PSI_FIXED,
       beta: curvature,
@@ -193,8 +202,16 @@ export function S6Regimes() {
         <Slider label="Curvature" def={sliderDefs.beta} value={curvature} min={0.1} max={1.0} step={0.05} onChange={setCurvature} />
         <Slider label="Capacity growth (%/period)" def={sliderDefs.capacityGrowth} value={capPct} min={0} max={30} step={1} onChange={setCapPct} />
         <Slider label="Demand growth (%/period)" def={sliderDefs.demandGrowth} value={demPct} min={0} max={30} step={1} onChange={setDemPct} />
-        {active === 'firm-specific' && (
-          <Slider label="Asymptote gap η_L/η_F" def={sliderDefs.etaGap} value={etaGap} min={1.0} max={1.6} step={0.01} onChange={setEtaGap} />
+        {(active === 'firm-specific' || active === 'continuing-additive') && (
+          <Slider
+            label={active === 'firm-specific' ? 'Asymptote gap η_L/η_F' : 'Additive gap α_L − α_F'}
+            def={sliderDefs.etaGap}
+            value={etaGap}
+            min={1.0}
+            max={1.6}
+            step={0.01}
+            onChange={setEtaGap}
+          />
         )}
       </div>
 

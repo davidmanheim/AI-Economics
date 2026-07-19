@@ -2,10 +2,16 @@
 // time (paper Section 11, "Technological Regimes, Consumer Prices, and Rent
 // Shares", \label{sec:technology-regimes}).
 //
-// The three productivity-vs-cumulative-training laws:
-//   common:        q_l(G) = qBar - d_l (psi_l G)^{-beta}      -> ratio q_L/q_F -> 1
-//   firm-specific: q_l(G) = eta_l qBar - d_l G^{-beta}        -> ratio -> eta_L/eta_F > 1
-//   continuing:    q_l(G) = eta_l G^{beta}                     -> no ceiling
+// The four productivity-vs-cumulative-training laws, organized on two axes
+// (are levels bounded? does the relative gap converge?):
+//   common:             q_l(G) = qBar - d_l (psi_l G)^{-beta}  -> bounded; ratio -> 1
+//   firm-specific:      q_l(G) = eta_l qBar - d_l G^{-beta}    -> bounded; ratio -> eta_L/eta_F
+//   continuing (mult.): q_l(G) = eta_l G^{beta}                -> unbounded; ratio -> eta_L/eta_F
+//   continuing (add.):  q_l(G) = G^{beta} + alpha_l           -> unbounded; ratio -> 1
+// The additive case is the fourth cell: unbounded growth with a converging
+// relative position (paper Section 12.4, subsec:additive-frontier). Its
+// differential rents vanish as a SHARE of a growing market but freeze in LEVEL
+// at the additive increment alpha_L - alpha_F.
 //
 // Each period, cumulative training G accumulates, capacity K and purchaser mass
 // N may grow, and the qualities are pushed through the static model to trace
@@ -23,7 +29,7 @@ import type { Params } from './types'
 import { allocate } from './allocation'
 import { bertrandDuopoly } from './demand'
 
-export type RegimeType = 'common' | 'firm-specific' | 'continuing'
+export type RegimeType = 'common' | 'firm-specific' | 'continuing' | 'continuing-additive'
 
 /** Common global asymptote: q_l(G) = qBar - d (psi G)^{-beta}. */
 export function qCommonAsymptote(
@@ -47,13 +53,28 @@ export function qFirmAsymptote(
   return eta * qBar - d * Math.pow(Math.max(G, 1e-12), -beta)
 }
 
-/** Continuing improvement (no ceiling): q_l(G) = eta G^{beta}. */
+/** Continuing improvement, multiplicative advantage (no ceiling): q_l(G) = eta G^{beta}. */
 export function qContinuing(
   G: number,
   eta: number,
   beta: number,
 ): number {
   return eta * Math.pow(Math.max(G, 0), beta)
+}
+
+/**
+ * Continuing improvement, additive advantage (no ceiling): q_l(G) = G^{beta} + alpha.
+ * Levels diverge, the absolute gap freezes at alpha_L - alpha_F, and the ratio
+ * q_L/q_F -> 1 (the fourth regime). Same diverging frontier G^{beta} as the
+ * multiplicative case, but the advantage rides on top as a fixed increment
+ * rather than a multiplier, so relative position converges.
+ */
+export function qContinuingAdditive(
+  G: number,
+  alpha: number,
+  beta: number,
+): number {
+  return Math.pow(Math.max(G, 0), beta) + alpha
 }
 
 /** Per-firm law parameters (arrays aligned with base.firms). */
@@ -63,8 +84,10 @@ export interface RegimeConfig {
   base: Params
   /** Common ceiling qBar (common & firm-specific regimes). */
   qBar: number
-  /** Firm-specific multipliers eta_l (firm-specific & continuing regimes). */
+  /** Firm-specific multipliers eta_l (firm-specific & continuing-multiplicative regimes). */
   eta: number[]
+  /** Additive increments alpha_l (continuing-additive regime only). */
+  alpha: number[]
   /** Gap coefficients d_l (common & firm-specific regimes). */
   d: number[]
   /** Research-efficiency psi_l (common regime only). */
@@ -113,6 +136,8 @@ function qOfG(config: RegimeConfig, i: number, G: number): number {
       return qFirmAsymptote(G, config.qBar, config.d[i], config.eta[i], config.beta)
     case 'continuing':
       return qContinuing(G, config.eta[i], config.beta)
+    case 'continuing-additive':
+      return qContinuingAdditive(G, config.alpha[i], config.beta)
   }
 }
 

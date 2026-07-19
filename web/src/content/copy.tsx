@@ -644,41 +644,62 @@ export const sections: Section[] = [
   {
     id: 's7',
     number: 'S7',
-    title: 'Three possible technological futures',
+    title: 'Four possible technological futures',
     anchor: 'regimes',
     body: (
       <>
         <p>
-          So where does all this end up? The model gives three long-run futures, and what separates
-          them is not whether progress stops, but whether the leader–follower gap survives, and
-          whether anyone can still charge above cost once it closes.
+          So where does all this end up? Two questions sort the long run, and they're easy to run
+          together. Does quality keep improving forever, or approach a ceiling? And does the
+          leader–follower gap close, or hold? The two are independent, and it's the second — whether
+          the gap closes — that decides whether being more productive still earns a rent. Crossing
+          them gives four futures, not three.
         </p>
         <ul>
           <li>
-            <strong>Common ceiling:</strong> everyone approaches the same quality,{' '}
-            <Katex math="q_L/q_F \to 1" />. The rents from being more productive vanish; markups can
-            still hang around if competition stays weak.
+            <strong>Common ceiling</strong> (bounded, gap closes): everyone approaches the same
+            quality, <Katex math="q_L/q_F \to 1" />. Productivity rents vanish outright; markups can
+            still linger if competition stays weak.
           </li>
           <li>
-            <strong>Firm-specific ceilings:</strong> some labs can simply reach higher,{' '}
-            <Katex math="q_L/q_F \to \eta_L/\eta_F > 1" />. A durable frontier premium survives even
-            when compute becomes abundant.
+            <strong>Firm-specific ceilings</strong> (bounded, gap holds): some labs simply reach
+            higher, <Katex math="q_L/q_F \to \eta_L/\eta_F > 1" />. A durable frontier premium
+            survives even when compute becomes abundant.
           </li>
           <li>
-            <strong>Continuing improvement:</strong> no ceiling in sight. Shares and rents cycle
-            around releases. Labs gain after breakthroughs, hyperscalers gain during catch-up.
+            <strong>Continuing improvement, multiplicative edge</strong> (unbounded, gap holds): no
+            ceiling, and the leader's advantage is a fixed <em>multiple</em>, so the gap rides the
+            frontier up. Shares and rents cycle around releases — labs gain after breakthroughs,
+            hyperscalers during catch-up.
+          </li>
+          <li>
+            <strong>Continuing improvement, additive edge</strong> (unbounded, gap closes): no
+            ceiling either. But the leader's head start is a fixed <em>increment</em> that an
+            ever-advancing frontier dwarfs, so <Katex math="q_L/q_F \to 1" /> even as both grow
+            without bound.
           </li>
         </ul>
         <p>
-          That last cycle is a proven result, not just a plausible story: under the paper's
-          two-model demand system, a breakthrough that widens the quality gap raises the leader's
-          markup and differential rent, and a follower catching up compresses them and improves the
-          hyperscaler's position.
+          That fourth future is the interesting one, because it splits a phrase the other three keep
+          whole. "Differential rents disappear" can mean two different things — the leader's margin
+          shrinks to zero in dollars, or it shrinks to zero as a share of the market. Under a common
+          ceiling both happen at once. Under the additive edge they come apart: the margin{' '}
+          <em>freezes</em> in dollars at the size of the increment, and <em>vanishes</em> only as a
+          share of a market whose total value keeps climbing. There's no commoditization by ceiling
+          here — quality never stops improving — only commoditization by convergence.
+        </p>
+        <p>
+          The release cycle is a proven result, not just a plausible story, and it runs in both
+          unbounded regimes period by period. Under the paper's two-model demand system, a
+          breakthrough that widens the gap raises the leader's markup and differential rent, and a
+          follower catching up compresses them and improves the hyperscaler's position. What differs
+          is only the trend the cycles ride on — flat under the multiplicative edge, convergent under
+          the additive one.
         </p>
         <p>
           The central warning here is about when models become commodities: interchangeable, priced
-          at cost. Equal quality alone does <em>not</em> get you there. You need all three together:
-          converging quality, enough competing model sellers, and enough hardware. Only when{' '}
+          at cost. Equal quality alone does not get you there. You need all three of converging
+          quality, enough competing model sellers, and enough hardware. Only when{' '}
           <Katex math="q_L - q_F \to 0" />, <Katex math="\mu_\ell \to 0" />, and{' '}
           <Katex math="r - c \to 0" /> hold together do{' '}
           <Term term="qualityAdjustedPrice">quality-adjusted prices</Term> approach physical cost.
@@ -687,23 +708,35 @@ export const sections: Section[] = [
       </>
     ),
     chartNote: {
-      text: 'A three-tab regime explorer — quality paths and their ratio on top, a stacked price-component area and quality-adjusted price line below, with end-state summary cards per regime — arrives in a later phase.',
+      text: 'A four-tab regime explorer — quality paths and their ratio on top, a stacked price-component area and quality-adjusted price line below, with end-state summary cards per regime — arrives in a later phase.',
       phase: 'Interactive chart · later phase',
     },
     derivation: (
       <>
         <p>
-          The three regimes are three laws for productivity as a function of cumulative training
+          The four regimes are four laws for productivity as a function of cumulative training
           compute <Katex math="G" />:
         </p>
         <Katex
           display
-          math="q_\ell(G) = \bar q - d_\ell(\psi_\ell G)^{-\beta}, \quad q_\ell(G) = \eta_\ell \bar q - d_\ell G^{-\beta}, \quad q_\ell(G) = \eta_\ell G^{\beta}."
+          math="q_\ell(G) = \bar q - d_\ell(\psi_\ell G)^{-\beta}, \quad q_\ell(G) = \eta_\ell \bar q - d_\ell G^{-\beta}, \quad q_\ell(G) = \eta_\ell G^{\beta}, \quad q_\ell(G) = G^{\beta} + \alpha_\ell."
         />
         <p>
-          The first two share a ceiling; the third grows without one. In the common-ceiling case{' '}
-          <Katex math="q_L/q_F \to 1" />; in the firm-specific case the ratio tends to{' '}
-          <Katex math="\eta_L/\eta_F > 1" />.
+          The first two share a ceiling; the last two grow without one. The ratio{' '}
+          <Katex math="q_L/q_F" /> tends to <Katex math="1" /> under the common ceiling and the
+          additive edge, and to <Katex math="\eta_L/\eta_F > 1" /> under the firm-specific ceiling and
+          the multiplicative edge. So it's the ceiling-vs-no-ceiling axis and the gap-closes-vs-holds
+          axis crossed. The additive law is the fourth cell the earlier three left empty. It's the
+          same additive form the productivity section set aside for being unable to hold an advantage
+          open against an advancing frontier; that inability is exactly what defines this regime.
+        </p>
+        <p>
+          One note on <Katex math="q" /> itself: it is economically-relevant quality, denominated in
+          what purchasers will pay, not a benchmark score. So a plateau in the <em>value</em> of
+          further quality is not a separate future: it simply is a ceiling in <Katex math="q" />, and
+          lands in one of the two bounded regimes. And these are asymptotic pictures, not a single
+          forecast path: a stretch of continuing improvement that later hits a ceiling is read by
+          applying each regime to its phase in turn.
         </p>
         <p>
           One caution about the markup-compression arrows: quality convergence raises own-price
