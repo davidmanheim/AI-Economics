@@ -14,11 +14,6 @@
 *.synctex.gz
 *.toc
 
-# Superseded paper drafts — paper-draft-July-14-additions.tex is the current master
-paper-draft-July-14.tex
-paper-draft-July-14-quickfixes.tex
-paper-draft-July-14-quickfixes-init-diff.pdf
-
 # Internal editorial/process notes, not part of the public source
 paper-review-followup.md
 paper-review-fresh-read.md
