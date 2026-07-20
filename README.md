@@ -20,7 +20,7 @@ Fable 5 and Sonnet 5.
 
 ## What's in here
 
-- **`paper-draft-July-14-additions.tex`, `paper.bib`** — the current LaTeX
+- **`paper.tex`, `paper.bib`** — the current LaTeX
   source and bibliography. Compiles with `latexmk -pdf` (requires a
   standard TeX distribution; the preamble uses `microtype`, `draftwatermark`,
   `natbib`, and a few other common packages).
