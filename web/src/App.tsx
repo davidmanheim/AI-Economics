@@ -69,7 +69,6 @@ function useActiveSection(anchors: string[]): string {
 export function App() {
   const active = useActiveSection(NAV_ANCHORS)
   return <>
-    <div className="draft-watermark" aria-hidden="true">In-Progress Draft</div>
     <header className="site-header">
       <a className="wordmark" href="#top">LLM economics</a>
       <nav className="section-nav" aria-label="Page navigation">
