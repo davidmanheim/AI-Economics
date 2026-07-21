@@ -14,10 +14,9 @@
 *.synctex.gz
 *.toc
 
-# Internal editorial/process notes, not part of the public source
-paper-review-followup.md
-paper-review-fresh-read.md
-paper-review-notes.md
+# Markdown is internal/editorial notes; only README.md is published
+*.md
+!README.md
 style-reference/
 
 # Web app
